@@ -6,12 +6,16 @@
 
         public string Name { get; set; }
 
-        public string classes { get; set; }
+        public string Classes { get; set; }
+
+        public string Capacity1 { get; set; }
+
+        public string Capacity2 { get; set; }
+
+        public string Fullcapacity => $"{Capacity1} + {Capacity2}";
+        
+        public string ImagePlane { get; set; }
 
 
-
-
-
-        public string Description { get; set; }
     }
 }
