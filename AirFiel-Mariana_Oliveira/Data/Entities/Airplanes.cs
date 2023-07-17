@@ -2,7 +2,7 @@
 
 namespace AirFiel_Mariana_Oliveira.Data.Entities
 {
-    public class Airplanes
+    public class Airplanes : IEntity
     {
         public int Id { get; set; }
 
@@ -11,11 +11,8 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
 
         public string Name { get; set; }
 
-        [Display(Name = "First Class")]
-        public string FirstClass { get; set; }
-
-        [Display(Name = "Second Class")]
-        public string SecondClass { get; set; }
+        [Display(Name = "Total of Classes")]
+        public int HowManyClasses { get; set; }
 
         [Display(Name = "First Class Capacity")]
         public string Capacity1 { get; set; }

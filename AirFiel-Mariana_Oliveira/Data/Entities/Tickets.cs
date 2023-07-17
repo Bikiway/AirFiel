@@ -4,7 +4,7 @@ using System.Xml.Linq;
 
 namespace AirFiel_Mariana_Oliveira.Data.Entities
 {
-    public class Tickets
+    public class Tickets : IEntity
     {
         public  int Id { get; set; }
 

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<AirFiel_Mariana_Oliveira.Data.Entities.Airplanes>
+﻿@model IEnumerable<AirFiel_Mariana_Oliveira.Data.Entities.Cities>
 
 @{
     ViewData["Title"] = "Index";
@@ -16,16 +16,16 @@
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.HowManyClasses)
+                @Html.DisplayNameFor(model => model.CountryName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Capacity1)
+                @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Capacity2)
+                @Html.DisplayNameFor(model => model.Flags)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ImagePlane)
+                @Html.DisplayNameFor(model => model.Airport)
             </th>
             <th></th>
         </tr>
@@ -37,17 +37,16 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.HowManyClasses)
-            </td>
-
-            <td>
-                @Html.DisplayFor(modelItem => item.Capacity1)
+                @Html.DisplayFor(modelItem => item.CountryName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Capacity2)
+                @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ImagePlane)
+                @Html.DisplayFor(modelItem => item.Flags)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Airport)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

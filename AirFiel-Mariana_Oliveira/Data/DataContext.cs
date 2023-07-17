@@ -8,6 +8,12 @@ namespace AirFiel_Mariana_Oliveira.Data
     {
         public DbSet<Airplanes> airplains { get; set; }
 
+        public DbSet<Cities> City { get; set; }
+
+        public DbSet<Employees> Employee { get; set; }
+
+        public DbSet<Tickets> Ticket { get; set; }
+
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         { }
     }

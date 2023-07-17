@@ -3,9 +3,9 @@ using System.Xml.Linq;
 
 namespace AirFiel_Mariana_Oliveira.Data.Entities
 {
-    public class Employees
+    public class Employees : IEntity
     {
-        public int EmployeeId { get; set; }
+        public int Id { get; set; }
 
         [Display(Name = "First Name")]
         public string FirstName { get; set; }

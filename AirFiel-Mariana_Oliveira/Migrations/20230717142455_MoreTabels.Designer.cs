@@ -4,14 +4,16 @@ using AirFiel_Mariana_Oliveira.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AirFiel_Mariana_Oliveira.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230717142455_MoreTabels")]
+    partial class MoreTabels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,13 +34,16 @@ namespace AirFiel_Mariana_Oliveira.Migrations
                     b.Property<string>("Capacity2")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("HowManyClasses")
-                        .HasColumnType("int");
+                    b.Property<string>("FirstClass")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImagePlane")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SecondClass")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
