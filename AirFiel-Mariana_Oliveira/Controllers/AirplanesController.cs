@@ -54,7 +54,7 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,FirstClass,SecondClass,Capacity1,Capacity2,ImagePlane")] Airplanes airplanes)
+        public async Task<IActionResult> Create([Bind("Id,Name,Capacity1,Capacity2,ImagePlane")] Airplanes airplanes)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,FirstClass,SecondClass,Capacity1,Capacity2,ImagePlane")] Airplanes airplanes)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Capacity1,Capacity2,ImagePlane")] Airplanes airplanes)
         {
             if (id != airplanes.Id)
             {

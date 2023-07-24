@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace AirFiel_Mariana_Oliveira.Data.Entities
 {
@@ -7,5 +8,8 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
+
+        [Display(Name = "Full Name")]
+        public string FullName => $"{FirstName} {LastName}";
     }
 }

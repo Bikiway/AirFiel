@@ -25,6 +25,6 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
         [Display(Name = "Airplane Image")]
         public string ImagePlane { get; set; }
 
-
+        public Users users { get; set; }
     }
 }

@@ -29,6 +29,13 @@ namespace AirFiel_Mariana_Oliveira
             {
                 cfg.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
             });
+
+            services.AddTransient<SeedDb>();
+
+
+
+
+
             services.AddControllersWithViews();
         }
 
@@ -46,9 +53,12 @@ namespace AirFiel_Mariana_Oliveira
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
+
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

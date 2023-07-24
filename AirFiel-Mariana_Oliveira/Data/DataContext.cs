@@ -14,6 +14,12 @@ namespace AirFiel_Mariana_Oliveira.Data
 
         public DbSet<Tickets> Ticket { get; set; }
 
+        public DbSet<Routes> Route { get; set; }
+
+        public DbSet<RoutesDetails> RouteDetails { get; set; }
+
+        public DbSet<RoutesDetailsTemp> RoutesDetailsTemps { get; set; }
+
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         { }
     }
