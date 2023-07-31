@@ -7,22 +7,30 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AirFiel_Mariana_Oliveira.Data;
 using AirFiel_Mariana_Oliveira.Data.Entities;
+using AirFiel_Mariana_Oliveira.Helpers;
+using AirFiel_Mariana_Oliveira.Models;
 
 namespace AirFiel_Mariana_Oliveira.Controllers
 {
     public class EmployeesController : Controller
     {
-        private readonly DataContext _context;
+        private readonly IEmployeeRepository _employeeRepository;
+        private readonly IImageHelper _imageHelper;
+        private readonly IUserHelper _userHelper;
+        private readonly IConverterHelper _converterHelper;
 
-        public EmployeesController(DataContext context)
+        public EmployeesController(IUserHelper userHelper, IConverterHelper converterHelper, IImageHelper imageHelper, IEmployeeRepository employeeRepository)
         {
-            _context = context;
+            _userHelper = userHelper;
+            _converterHelper = converterHelper;
+            _imageHelper = imageHelper;
+            _employeeRepository = employeeRepository;
         }
 
         // GET: Employees
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Employee.ToListAsync());
+            return View(_employeeRepository.GetAllWithUser().OrderBy(e => e.FirstName));
         }
 
         // GET: Employees/Details/5
@@ -30,14 +38,14 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("EmployeeNotFound");
             }
 
-            var employees = await _context.Employee
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var employees = await _employeeRepository.GetByIdAsync(id.Value);
+
             if (employees == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("EmployeeNotFound");
             }
 
             return View(employees);
@@ -54,15 +62,25 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Age,Experience,ProfileImage")] Employees employees)
+        public async Task<IActionResult> Create(EmployeeViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(employees);
-                await _context.SaveChangesAsync();
+                var path = string.Empty;
+
+                if(model.ImageProfile != null && model.ImageProfile.Length > 0)
+                {
+                    path = await _imageHelper.UploadImageAsync(model.ImageProfile, "employees");
+                }
+
+                var employees = _converterHelper.ToEmployee(model, path, true);
+
+                employees.Users = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                await _employeeRepository.CreateAsync(employees);
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(employees);
+            return View(model);
         }
 
         // GET: Employees/Edit/5
@@ -70,15 +88,18 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("EmployeeNotFound");
             }
 
-            var employees = await _context.Employee.FindAsync(id);
+            var employees = await _employeeRepository.GetByIdAsync(id.Value);
+
             if (employees == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("EmployeeNotFound");
             }
-            return View(employees);
+
+            var model = _converterHelper.ToEmployeeViewModel(employees);
+            return View(model);
         }
 
         // POST: Employees/Edit/5
@@ -86,25 +107,29 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Age,Experience,ProfileImage")] Employees employees)
+        public async Task<IActionResult> Edit(EmployeeViewModel model)
         {
-            if (id != employees.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(employees);
-                    await _context.SaveChangesAsync();
+                    var path = model.ProfileImage;
+
+                    if(model.ImageProfile != null && model.ImageProfile.Length > 0)
+                    {
+                        path = await _imageHelper.UploadImageAsync(model.ImageProfile, "employees");
+                    }
+
+                    var employees = _converterHelper.ToEmployee(model, path, false);
+
+                    employees.Users = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                    await _employeeRepository.UpdateAsync(employees);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EmployeesExists(employees.Id))
+                    if (!await _employeeRepository.ExistAsync(model.Id))
                     {
-                        return NotFound();
+                        return new NotFoundViewResult("EmployeeNotFound");
                     }
                     else
                     {
@@ -113,7 +138,7 @@ namespace AirFiel_Mariana_Oliveira.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(employees);
+            return View(model);
         }
 
         // GET: Employees/Delete/5
@@ -121,14 +146,14 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("EmployeeNotFound");
             }
 
-            var employees = await _context.Employee
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var employees = await _employeeRepository.GetByIdAsync(id.Value);
+
             if (employees == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("EmployeeNotFound");
             }
 
             return View(employees);
@@ -139,15 +164,24 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var employees = await _context.Employee.FindAsync(id);
-            _context.Employee.Remove(employees);
-            await _context.SaveChangesAsync();
+            if(_employeeRepository == null)
+            {
+                return Problem("Entity set 'DataContext.employees' is null");
+            }
+
+            var employees = await _employeeRepository.GetByIdAsync(id);
+
+            if(employees != null)
+            {
+                await _employeeRepository.DeleteAsync(employees);
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
-        private bool EmployeesExists(int id)
+        public IActionResult EmployeeNotFound()
         {
-            return _context.Employee.Any(e => e.Id == id);
+            return View();
         }
     }
 }

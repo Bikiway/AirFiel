@@ -7,42 +7,52 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AirFiel_Mariana_Oliveira.Data;
 using AirFiel_Mariana_Oliveira.Data.Entities;
+using AirFiel_Mariana_Oliveira.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using AirFiel_Mariana_Oliveira.Models;
 
 namespace AirFiel_Mariana_Oliveira.Controllers
 {
     public class AirplanesController : Controller
     {
-        private readonly DataContext _context;
+        private readonly IAirplanesRepository _repository;
+        private readonly IUserHelper _userHelper;
+        private readonly IConverterHelper _converterHelper;
+        private readonly IImageHelper _imageHelper;
 
-        public AirplanesController(DataContext context)
+        public AirplanesController(IImageHelper imageHelper, IConverterHelper converterHelper, IUserHelper userHelper, IAirplanesRepository airplanesRepository)
         {
-            _context = context;
+           _converterHelper = converterHelper;
+            _imageHelper = imageHelper;
+            _userHelper = userHelper;
+            _repository = airplanesRepository;
         }
 
         // GET: Airplanes
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.airplains.ToListAsync());
+            return View(_repository.GetAllWithUser().OrderBy(e => e.Name));
         }
-
+        [Authorize(Roles = "Admin")]
         // GET: Airplanes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("AirplaneNotFound");
             }
 
-            var airplanes = await _context.airplains
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var airplanes = await _repository.GetByIdAsync(id.Value);
+             
             if (airplanes == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("AirplaneNotFound");
             }
 
             return View(airplanes);
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Airplanes/Create
         public IActionResult Create()
         {
@@ -54,31 +64,47 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Capacity1,Capacity2,ImagePlane")] Airplanes airplanes)
+        public async Task<IActionResult> Create(PlanesViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(airplanes);
-                await _context.SaveChangesAsync();
+                var imageId = string.Empty;
+
+                if(model.ImageFile != null && model.ImageFile.Length > 0)
+                {
+                    imageId = await _imageHelper.UploadImageAsync(model.ImageFile, "planes");
+                }
+
+                var airplanes = _converterHelper.ToPlanes(model, imageId, true);
+
+               airplanes.users = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+
+                await _repository.CreateAsync(airplanes);
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(airplanes);
+            return View(model);
         }
 
+
         // GET: Airplanes/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("AirplaneNotFound");
             }
 
-            var airplanes = await _context.airplains.FindAsync(id);
+            var airplanes = await _repository.GetByIdAsync(id.Value);
+
             if (airplanes == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("AirplaneNotFound");
             }
-            return View(airplanes);
+
+            var model = _converterHelper.ToPlanesViewModel(airplanes);
+            return View(model);
         }
 
         // POST: Airplanes/Edit/5
@@ -86,25 +112,29 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Capacity1,Capacity2,ImagePlane")] Airplanes airplanes)
+        public async Task<IActionResult> Edit(PlanesViewModel model)
         {
-            if (id != airplanes.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(airplanes);
-                    await _context.SaveChangesAsync();
+                    var path = model.ImageFullPath;
+
+                    if(model.ImageFile != null && model.ImageFile.Length > 0)
+                    {
+                        path = await _imageHelper.UploadImageAsync(model.ImageFile, "planes");
+                    }
+
+                    var plane = _converterHelper.ToPlanes(model, path, false);
+
+                    plane.users = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                    await _repository.UpdateAsync(plane);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AirplanesExists(airplanes.Id))
+                    if (! await _repository.ExistAsync(model.Id))
                     {
-                        return NotFound();
+                        return new NotFoundViewResult("AirplaneNotFound");
                     }
                     else
                     {
@@ -113,22 +143,23 @@ namespace AirFiel_Mariana_Oliveira.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(airplanes);
+            return View(model);
         }
 
         // GET: Airplanes/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("AirplaneNotFound");
             }
 
-            var airplanes = await _context.airplains
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var airplanes = await _repository.GetByIdAsync(id.Value);
+
             if (airplanes == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("AirplaneNotFound");
             }
 
             return View(airplanes);
@@ -139,15 +170,24 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var airplanes = await _context.airplains.FindAsync(id);
-            _context.airplains.Remove(airplanes);
-            await _context.SaveChangesAsync();
+            if(_repository == null)
+            {
+                return Problem("Entity set 'DataContext.airplanes' is null");
+            }
+
+            var planes = await _repository.GetByIdAsync(id);
+
+            if(planes != null)
+            {
+                await _repository.DeleteAsync(planes);
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AirplanesExists(int id)
+        public IActionResult PlaneNotFound()
         {
-            return _context.airplains.Any(e => e.Id == id);
+            return View();
         }
     }
 }

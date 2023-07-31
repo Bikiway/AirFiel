@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace AirFiel_Mariana_Oliveira.Data.Entities
 {
@@ -11,8 +12,12 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
 
         public string Name { get; set; }
 
+
         [Display(Name = "Total of Classes")]
+        [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = false)]
         public int HowManyClasses { get; set; }
+
+
 
         [Display(Name = "First Class Capacity")]
         public string Capacity1 { get; set; }
@@ -22,8 +27,13 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
 
         public string Fullcapacity => $"{Capacity1} + {Capacity2}";
 
+
+
         [Display(Name = "Airplane Image")]
         public string ImagePlane { get; set; }
+
+
+        public string ImageFullPath => "";
 
         public Users users { get; set; }
     }

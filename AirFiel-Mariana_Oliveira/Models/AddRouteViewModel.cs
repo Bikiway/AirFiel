@@ -8,10 +8,10 @@ namespace AirFiel_Mariana_Oliveira.Models
     public class AddRouteViewModel
     {
         [Display(Name ="Planes")]
-        [Range(1, int.MaxValue, ErrorMessage ="You must choose a airplane")]
+        [Range(1, int.MaxValue, ErrorMessage ="You must choose a airplane.")]
         public int Id { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage ="Must be a positive number")]
+        [Range(1, int.MaxValue, ErrorMessage ="Must be a positive number.")]
         public int QuantityOfTravels { get; set; }
         
         //ComboBox dos aviões

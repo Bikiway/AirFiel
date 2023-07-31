@@ -18,8 +18,11 @@ namespace AirFiel_Mariana_Oliveira.Helpers
         Task<IdentityResult> UpdateUSerAsync(Users user); //Update o user first name and last
 
         Task<IdentityResult> ChangePasswordAsync(Users user, string oldPassword, string newPassword); //Mudar a pass, compará-la com a antiga e substituir.
+
         Task CheckRoleAsync(string roleName);
+
         Task AddUserToRoleAsync(Users user, string roleName);
+
         Task<bool> IsUserInRoleAsync(Users user, string roleName);
     }
 }

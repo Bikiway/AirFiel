@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace AirFiel_Mariana_Oliveira.Data.Entities
 {
@@ -20,6 +21,8 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
 
         [Display(Name = "Airport")]
         public string Airport { get; set; }
+
+        public Users Users { get; set; }
 
         [Display(Name="City")]
         public string FullCityName => $"{Name}, {CountryName}";

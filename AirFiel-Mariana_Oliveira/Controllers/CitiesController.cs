@@ -7,43 +7,55 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AirFiel_Mariana_Oliveira.Data;
 using AirFiel_Mariana_Oliveira.Data.Entities;
+using AirFiel_Mariana_Oliveira.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using AirFiel_Mariana_Oliveira.Models;
 
 namespace AirFiel_Mariana_Oliveira.Controllers
 {
     public class CitiesController : Controller
     {
-        private readonly DataContext _context;
+        private readonly IUserHelper _userHelper;
+        private readonly IConverterHelper _converterHelper;
+        private readonly ICitiesRepository _cityRepository;
+        private readonly IImageHelper _imageHelper;
 
-        public CitiesController(DataContext context)
+
+        public CitiesController(IImageHelper imageHelper, IUserHelper userHelper, ICitiesRepository repository, IConverterHelper converterHelper)
         {
-            _context = context;
+            _imageHelper = imageHelper;
+            _converterHelper = converterHelper;
+            _userHelper = userHelper;
+            _cityRepository = repository;
         }
 
         // GET: Cities
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.City.ToListAsync());
+            return View(_cityRepository.GetAllWithUsers().OrderBy(e => e.Name));
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Cities/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CityNotFound");
             }
 
-            var cities = await _context.City
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var cities = await _cityRepository.GetByIdAsync(id.Value);
+
             if (cities == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CityNotFound");
             }
 
             return View(cities);
         }
 
         // GET: Cities/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -54,31 +66,44 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,CountryName,Description,Flags,Airport")] Cities cities)
+        public async Task<IActionResult> Create(CitiesViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(cities);
-                await _context.SaveChangesAsync();
+                var path = string.Empty;
+
+                if(model.ImageCity != null)
+                {
+                    path = await _imageHelper.UploadImageAsync(model.ImageCity, "cities");
+                }
+
+                 var citys = _converterHelper.ToCities(model, path, true);
+
+                citys.Users = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                await _cityRepository.CreateAsync(citys);
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(cities);
+            return View(model);
         }
 
         // GET: Cities/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CityNotFound");
             }
 
-            var cities = await _context.City.FindAsync(id);
+            var cities = await _cityRepository.GetByIdAsync(id.Value);
+
             if (cities == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CityNotFound");
             }
-            return View(cities);
+            var model = _converterHelper.ToCitiesViewModel(cities);
+            return View(model);
         }
 
         // POST: Cities/Edit/5
@@ -86,25 +111,30 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,CountryName,Description,Flags,Airport")] Cities cities)
+        public async Task<IActionResult> Edit(CitiesViewModel model)
         {
-            if (id != cities.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(cities);
-                    await _context.SaveChangesAsync();
+                    var path = model.Flags;
+
+                    if(model.ImageCity != null && model.ImageCity.Length > 0)
+                    {
+                        path = await _imageHelper.UploadImageAsync(model.ImageCity, "cities");
+                    }
+
+                    var cities = _converterHelper.ToCities(model, path, false);
+
+                    cities.Users = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                    await _cityRepository.UpdateAsync(cities);
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CitiesExists(cities.Id))
+                    if (!await _cityRepository.ExistAsync(model.Id))
                     {
-                        return NotFound();
+                        return new NotFoundViewResult("CityNotFound");
                     }
                     else
                     {
@@ -113,22 +143,23 @@ namespace AirFiel_Mariana_Oliveira.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(cities);
+            return View(model);
         }
 
         // GET: Cities/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CityNotFound");
             }
 
-            var cities = await _context.City
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var cities = await _cityRepository.GetByIdAsync(id.Value);
+
             if (cities == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("CityNotFound");
             }
 
             return View(cities);
@@ -139,15 +170,23 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var cities = await _context.City.FindAsync(id);
-            _context.City.Remove(cities);
-            await _context.SaveChangesAsync();
+            if(_cityRepository == null)
+            {
+                return Problem("Entity set 'DataContext.Cities' is null");
+            }
+            var city = await _cityRepository.GetByIdAsync(id);
+
+            if(city != null)
+            {
+                await _cityRepository.DeleteAsync(city);
+            }
+
             return RedirectToAction(nameof(Index));
         }
-
-        private bool CitiesExists(int id)
+        
+        public IActionResult CityNotFound()
         {
-            return _context.City.Any(e => e.Id == id);
+            return View();
         }
     }
 }

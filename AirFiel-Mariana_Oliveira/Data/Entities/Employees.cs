@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Xml.Linq;
 
 namespace AirFiel_Mariana_Oliveira.Data.Entities
@@ -15,6 +16,7 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
         
         public string EmployeeFullName => $"{FirstName} {LastName}";
 
+
         [Display(Name = "Age")]
         public string Age { get; set; }
 
@@ -23,5 +25,7 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
 
         [Display(Name = "Profile Image")]
         public string ProfileImage { get; set; }
+
+        public Users Users { get; set; }
     }
 }
