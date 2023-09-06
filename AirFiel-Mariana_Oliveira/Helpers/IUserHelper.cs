@@ -24,5 +24,17 @@ namespace AirFiel_Mariana_Oliveira.Helpers
         Task AddUserToRoleAsync(Users user, string roleName);
 
         Task<bool> IsUserInRoleAsync(Users user, string roleName);
+
+        Task<SignInResult> ValidatePasswordAsync(Users user, string password); 
+
+        Task<string> GenerateEmailConfirmationTokenAsync(Users user); 
+
+        Task<IdentityResult> ConfirmEmailAsync(Users user, string token); 
+
+        Task<Users> GetUserByIdAsync(string userId); 
+
+        Task<string> GeneratePasswordResetTokenAsync(Users user); 
+
+        Task<IdentityResult> ResetPasswordAsync(Users user, string token, string password);
     }
 }

@@ -34,17 +34,18 @@ namespace AirFiel_Mariana_Oliveira.Helpers
             };
         }
 
-        public Employees ToEmployee(EmployeeViewModel model, string imageId, bool isNew)
+        public Employees ToEmployee(ChangeEmployeeUserViewModel change, EmployeeViewModel model, string imageId, bool isNew)
         {
             return new Employees
             {
-                Id = model.Id,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
+                Id =isNew ? 0 : change.Id,
+                FirstName = change.FirstName,
+                LastName = change.LastName,
+                PhoneNumber = change.PhoneNumber,
                 ProfileImage = imageId,
-                Age = model.Age,
-                Experience = model.Experience,
-                Users = model.Users,
+                Age = change.Age,
+                Experience = change.Experience,
+                Users = change.Users,
             };
         }
 
@@ -55,6 +56,7 @@ namespace AirFiel_Mariana_Oliveira.Helpers
                 Id = employees.Id,
                 FirstName = employees.FirstName,
                 LastName = employees.LastName,
+                PhoneNumber = employees.PhoneNumber,
                 ProfileImage = employees.ProfileImage,
                 Age = employees.Age,
                 Experience = employees.Experience,

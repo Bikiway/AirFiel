@@ -1,4 +1,4 @@
-﻿@model AirFiel_Mariana_Oliveira.Data.Entities.Employees
+﻿@model AirFiel_Mariana_Oliveira.Models.ChangeEmployeeUserViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -28,20 +28,41 @@
                 <span asp-validation-for="Age" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="UserName" class="control-label"></label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>       
+            <div class="form-group">
                 <label asp-for="Experience" class="control-label"></label>
                 <input asp-for="Experience" class="form-control" />
                 <span asp-validation-for="Experience" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ProfileImage" class="control-label"></label>
-                <input asp-for="ProfileImage" class="form-control" />
+                <input asp-for="ProfileImage" class="form-control" type="file"/>
                 <span asp-validation-for="ProfileImage" class="text-danger"></span>
+            </div>  
+            <div class="form-group">
+                <label asp-for="Password">Password</label>
+                <input asp-for="Password" type="password" class="form-control" />
+                <span asp-validation-for="Password" class="text-warning"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Confirm">Confirm New Password</label>
+                <input asp-for="Confirm" type="password" class="form-control" />
+                <span asp-validation-for="Confirm" class="text-warning"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
+</div>
+
+<div class="text-success">
+    <p>
+        @ViewBag.Message
+    </p>
 </div>
 
 <div>

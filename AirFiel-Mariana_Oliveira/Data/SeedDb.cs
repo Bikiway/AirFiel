@@ -22,7 +22,7 @@ namespace AirFiel_Mariana_Oliveira.Data
             await _context.Database.EnsureCreatedAsync();
 
             await _userHelper.CheckRoleAsync("Admin");
-            await _userHelper.CheckRoleAsync("Funcionarios");
+            await _userHelper.CheckRoleAsync("Employees");
             await _userHelper.CheckRoleAsync("Customer");
 
             var user = await _userHelper.GetUserByEmailAsync("mariana.95@outlook.pt");
@@ -34,9 +34,13 @@ namespace AirFiel_Mariana_Oliveira.Data
                     LastName = "Oliveira",
                     Email = "mariana.95@outlook.pt",
                     UserName = "mariana.95@outlook.pt",
+                    DateOfBirth = DateTime.Parse(DateTime.Now.ToString("26/09/1995")),
+                    PhoneNumber = "123456789",
+                    Age= "27",
+                    Experience="Administrator",
                 };
 
-                var result = await _userHelper.AddUserAsync(user, "1234");
+                var result = await _userHelper.AddUserAsync(user, "123456");
 
                 if(result != IdentityResult.Success)
                 {
@@ -44,6 +48,8 @@ namespace AirFiel_Mariana_Oliveira.Data
                 }
 
                 await _userHelper.AddUserToRoleAsync(user, "Admin");
+                var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                await _userHelper.ConfirmEmailAsync(user, token);
             }
 
             var isInRole = await _userHelper.IsUserInRoleAsync(user, "Admin");

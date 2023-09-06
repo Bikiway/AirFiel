@@ -3,7 +3,13 @@ using AirFiel_Mariana_Oliveira.Helpers;
 using AirFiel_Mariana_Oliveira.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace AirFiel_Mariana_Oliveira.Controllers
@@ -11,10 +17,14 @@ namespace AirFiel_Mariana_Oliveira.Controllers
     public class AccountController : Controller
     {
         private readonly IUserHelper _userHelper;
+        private readonly IConfiguration _configuration;
+        private readonly IMailHelper _mailHelper;
 
-        public AccountController(IUserHelper userHelper)
+        public AccountController(IUserHelper userHelper, IMailHelper mailHelper, IConfiguration configuration)
         {
             _userHelper = userHelper;
+            _mailHelper = mailHelper;
+            _configuration = configuration;
         }
 
         public IActionResult Login()
@@ -74,6 +84,8 @@ namespace AirFiel_Mariana_Oliveira.Controllers
                         LastName = model.LastName,
                         Email = model.UserName,
                         UserName = model.UserName,
+                        PhoneNumber = model.PhoneNumber,
+                        DateOfBirth = model.BirthDate,
                     };
 
                     var result = await _userHelper.AddUserAsync(user, model.Password);
@@ -83,22 +95,27 @@ namespace AirFiel_Mariana_Oliveira.Controllers
                         return View(model);
                     }
 
-                    var loginViewModel = new LoginViewModel
+                    string myToken = await _userHelper.GenerateEmailConfirmationTokenAsync(user); 
+                    string tokenLink = Url.Action("ConfirmEmail", "Account", new   
                     {
-                        Password = model.Password,
-                        RememberMe = false,
-                        UserName = model.UserName,
-                    };
+                        userid = user.Id,
+                        token = myToken
+                    }, protocol: HttpContext.Request.Scheme); 
 
-                    var result2 = await _userHelper.LoginAsync(loginViewModel);
 
-                    if (result2.Succeeded)
+                    Response response = _mailHelper.SendEmail(model.UserName, "AirFiel - Email Confirmation", $"<h1>Email Confirmation</h1>" +
+                        $"<h2>Thanks for joining us, to allow you in please click in the link underneed</h2>" +
+                        $"</br>" +
+                        $"</br>" +
+                        $"<a href = \"{tokenLink}\">Confirm Email</a>");
+
+                    if (response.IsSuccess)
                     {
-                        return RedirectToAction("Index", "Home");
+                        ViewBag.Message = "The email has been sent.";
+                        return View(model);
                     }
 
-                    ModelState.AddModelError(string.Empty, "Sorry, an error occured");
-
+                    ModelState.AddModelError(string.Empty, "The user couldn't be logged.");
                 }
             }
             return View(model);
@@ -113,6 +130,8 @@ namespace AirFiel_Mariana_Oliveira.Controllers
             {
                 model.FirstName = user.FirstName;
                 model.LastName = user.LastName;
+                model.BirthDate = user.DateOfBirth;
+                model.PhoneNumber = user.PhoneNumber;
             }
 
             return View(model);
@@ -129,6 +148,8 @@ namespace AirFiel_Mariana_Oliveira.Controllers
                 {
                     user.FirstName = model.FirstName;
                     user.LastName = model.LastName;
+                    user.PhoneNumber = model.PhoneNumber;
+                    user.DateOfBirth = model.BirthDate;
 
                     var response = await _userHelper.UpdateUSerAsync(user);
 
@@ -177,6 +198,133 @@ namespace AirFiel_Mariana_Oliveira.Controllers
             return this.View(model);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CreateToken([FromBody] LoginViewModel model)
+        {
+            if (this.ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(model.UserName);
+                if (user != null)
+                {
+                    var result = await _userHelper.ValidatePasswordAsync(
+                        user,
+                        model.Password);
+                    if (result.Succeeded)
+                    {
+                        var claims = new[]
+                        {
+                            new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                        };
+
+                        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"])); //Algoritmo para ir buscar a key (No appsettings.json).
+                        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256); //Gerar o token, usando o algoritmo que vem do security key. 256 bits. Depende do middleware.
+                        var token = new JwtSecurityToken(
+                            _configuration["Tokens:Issuer"],
+                            _configuration["Tokens:Audience"],
+                            claims,
+                            expires: DateTime.UtcNow.AddDays(15),
+                            signingCredentials: credentials);
+                        var results = new
+                        {
+                            token = new JwtSecurityTokenHandler().WriteToken(token),
+                            expiration = token.ValidTo
+                        };
+
+                        return this.Created(string.Empty, results);
+                    }
+                }
+            }
+            return BadRequest();
+        }
+
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
+            {
+                return NotFound();
+            }
+
+            var user = await _userHelper.GetUserByIdAsync(userId); //Verificar se tem user
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var result = await _userHelper.ConfirmEmailAsync(user, token); //Vê se está tudo Okay.
+
+            if (!result.Succeeded)
+            {
+                return NotFound();
+            }
+
+            return View();
+        }
+
+
+        public IActionResult RecoverPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RecoverPassword(RecoverPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(model.Email);
+                if (user == null)
+                {
+                    ModelState.AddModelError(string.Empty, "The email doensn't correspond to a registered email user");
+                    return View(model); //Não deixar os campos vazios novamente.
+                }
+
+                var myToken = await _userHelper.GeneratePasswordResetTokenAsync(user);
+
+                var link = Url.Action(
+                    "ResetPassword",
+                    "Account",
+                    new { token = myToken }, protocol: HttpContext.Request.Scheme);
+
+                Response response = _mailHelper.SendEmail(model.Email, "SuperShop Password Reset", $"<h1>SuperShop forgot your Password?</h1>" +
+                    $"To reset it, please click in this link:</br></br>" +
+                    $"<a href= \"{link}\"> Reset Password</a>");
+
+                if (response.IsSuccess)
+                {
+                    ViewBag.Message = "The instructions to recover your password has been sent to the email associated.";
+                }
+
+                return View();
+            }
+            return View(model);
+        }
+
+        public IActionResult ResetPassword(string token)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            var user = await _userHelper.GetUserByEmailAsync(model.UserName);
+            if (user != null)
+            {
+                var result = await _userHelper.ResetPasswordAsync(user, model.Token, model.Password);
+                if (result.Succeeded)
+                {
+                    ViewBag.Message = "Your Password has been successfuly reset it";
+                    return View();
+                }
+
+                ViewBag.Message = "Error while resetting your password...";
+                return View();
+            }
+
+            ViewBag.Message = "User Not Found!";
+            return View(model);
+        }
 
         public IActionResult NotAuthorized()
         {
