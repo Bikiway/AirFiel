@@ -23,12 +23,6 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
         [DataType(DataType.EmailAddress)]
         public string UserName { get; set; }
 
-
-        [Required]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
-
-
         [Display(Name = "Age")]
         public string Age { get; set; }
 
@@ -43,7 +37,6 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
 
         [Display(Name = "Profile Image")]
         public string ProfileImage { get; set; }
-
 
         public Users Users { get; set; }
     }
