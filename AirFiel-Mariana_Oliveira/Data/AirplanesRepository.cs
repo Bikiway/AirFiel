@@ -16,14 +16,15 @@ namespace AirFiel_Mariana_Oliveira.Data
 
         public IQueryable<Airplanes> GetAllWithUsers()
         {
-            return _dataContext.airplains.Include(p => p.users);
+            return _dataContext.airplanes.Include(p => p.users);
         }
+
 
         public IEnumerable<SelectListItem> GetComboAirplanes()
         {
-            var list = _dataContext.airplains.Select(p => new SelectListItem
+            var list = _dataContext.airplanes.Select(p => new SelectListItem
             {
-                Text = p.Name,
+                Text = p.NamePlusCapacity,
                 Value = p.Id.ToString()
             }).ToList();
 

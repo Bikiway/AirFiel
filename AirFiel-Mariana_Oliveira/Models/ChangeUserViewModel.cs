@@ -16,9 +16,9 @@ namespace AirFiel_Mariana_Oliveira.Models
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
-        [Display(Name = "Birth Date")]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = false)]
-        public DateTime BirthDate { get; set; }
+        [Display(Name = "Age")]
+        [MaxLength(3, ErrorMessage = "The field {0} only can contain {1} characters length")]
+        public string Age { get; set; }
 
         [MaxLength(20, ErrorMessage = "The field {0} only can contain {1} characters length")]
         public string PhoneNumber { get; set; }

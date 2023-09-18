@@ -8,5 +8,14 @@ namespace AirFiel_Mariana_Oliveira.Models
     {
         [Display(Name = "Profile Image")]
         public IFormFile ImageProfile { get; set; }
+
+
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+
+        [Required]
+        [Compare("Password")]
+        public string Confirm { get; set; }
     }
 }

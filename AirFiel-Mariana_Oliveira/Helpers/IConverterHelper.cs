@@ -15,7 +15,7 @@ namespace AirFiel_Mariana_Oliveira.Helpers
         CitiesViewModel ToCitiesViewModel(Cities cities);
 
         //Employee converter helper
-        Employees ToEmployee(ChangeEmployeeUserViewModel change, EmployeeViewModel model, string imageId, bool isNew);
+        Employees ToEmployee(EmployeeViewModel model, string imageId, bool isNew);
         EmployeeViewModel ToEmployeeViewModel(Employees employees);
     }
 }

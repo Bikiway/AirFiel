@@ -85,7 +85,7 @@ namespace AirFiel_Mariana_Oliveira.Controllers
                         Email = model.UserName,
                         UserName = model.UserName,
                         PhoneNumber = model.PhoneNumber,
-                        DateOfBirth = model.BirthDate,
+                        Age = model.Age,
                     };
 
                     var result = await _userHelper.AddUserAsync(user, model.Password);
@@ -111,6 +111,8 @@ namespace AirFiel_Mariana_Oliveira.Controllers
 
                     if (response.IsSuccess)
                     {
+                        await _userHelper.AddUserToRoleAsync(user, "Customer");
+                        await _userHelper.CheckRoleAsync("Customer");
                         ViewBag.Message = "The email has been sent.";
                         return View(model);
                     }
@@ -130,7 +132,7 @@ namespace AirFiel_Mariana_Oliveira.Controllers
             {
                 model.FirstName = user.FirstName;
                 model.LastName = user.LastName;
-                model.BirthDate = user.DateOfBirth;
+                model.Age = user.Age;
                 model.PhoneNumber = user.PhoneNumber;
             }
 
@@ -149,7 +151,7 @@ namespace AirFiel_Mariana_Oliveira.Controllers
                     user.FirstName = model.FirstName;
                     user.LastName = model.LastName;
                     user.PhoneNumber = model.PhoneNumber;
-                    user.DateOfBirth = model.BirthDate;
+                    user.Age = model.Age;
 
                     var response = await _userHelper.UpdateUSerAsync(user);
 

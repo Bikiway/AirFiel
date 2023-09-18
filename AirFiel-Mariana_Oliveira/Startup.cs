@@ -26,23 +26,24 @@ namespace AirFiel_Mariana_Oliveira
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddIdentity<Users, IdentityRole>(cfg =>
-            {
-                //Emails
-                cfg.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
-                cfg.SignIn.RequireConfirmedEmail = true;
-                cfg.User.RequireUniqueEmail = true;
 
-                //Passwords
-                cfg.Password.RequireDigit = false;
-                cfg.Password.RequireUppercase = false;
-                cfg.Password.RequiredUniqueChars = 0;
-                cfg.Password.RequireLowercase = false;
-                cfg.Password.RequiredLength = 6;
-                cfg.Password.RequireNonAlphanumeric = false;
-            })
-                .AddDefaultTokenProviders()
-            .AddEntityFrameworkStores<DataContext>();
+            services.AddIdentity<Users, IdentityRole>(cfg =>
+                {
+                    //Emails
+                    cfg.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
+                    cfg.SignIn.RequireConfirmedEmail = true;
+                    cfg.User.RequireUniqueEmail = true;
+
+                    //Passwords
+                    cfg.Password.RequireDigit = false;
+                    cfg.Password.RequireUppercase = false;
+                    cfg.Password.RequiredUniqueChars = 0;
+                    cfg.Password.RequireLowercase = false;
+                    cfg.Password.RequiredLength = 6;
+                    cfg.Password.RequireNonAlphanumeric = false;
+                })
+                    .AddDefaultTokenProviders()
+                .AddEntityFrameworkStores<DataContext>();
 
             services.AddAuthentication()
              .AddCookie()
@@ -61,7 +62,10 @@ namespace AirFiel_Mariana_Oliveira
             services.AddDbContext<DataContext>(cfg =>
             {
                 cfg.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
+                cfg.UseinMemoryDatabase("API");
             });
+
+            services.AddEndPointApiExplorer();
 
             services.AddFlashMessage();
 
@@ -75,19 +79,23 @@ namespace AirFiel_Mariana_Oliveira
 
             services.AddScoped<IMailHelper, MailHelper>();
 
+            services.AddScoped<IRoutesRepository, RoutesRepository>();
+
+            services.AddScoped<ITicketsRepository, TicketsRepository>();
+
             services.AddScoped<IAirplanesRepository, AirplanesRepository>();
 
             services.AddScoped<ICitiesRepository, CitiesRepository>();
 
-            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-
-            services.AddControllersWithViews();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();           
 
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/Account/NotAuthorized";
                 options.AccessDeniedPath = "/Account/NotAuthorized";
             });
+
+            services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

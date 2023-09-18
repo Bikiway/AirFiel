@@ -6,13 +6,17 @@ namespace AirFiel_Mariana_Oliveira.Data
 {
     public class DataContext : IdentityDbContext<Users>
     {
-        public DbSet<Airplanes> airplains { get; set; }
+        public DbSet<Airplanes> airplanes { get; set; }
 
         public DbSet<Cities> City { get; set; }
 
         public DbSet<Employees> Employee { get; set; }
 
         public DbSet<Tickets> Ticket { get; set; }
+
+        public DbSet<TicketsDetails> TicketDetails { get; set; }
+
+        public DbSet<TicketsDetailsTemp> TicketDetailsTemps { get; set; }
 
         public DbSet<Routes> Route { get; set; }
 

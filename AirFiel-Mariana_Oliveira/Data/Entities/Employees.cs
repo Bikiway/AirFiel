@@ -15,13 +15,19 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
 
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
-        
+
 
         public string EmployeeFullName => $"{FirstName} {LastName}";
+
+        public string NameAndExperience => $"{FirstName} - {Experience}";
 
 
         [DataType(DataType.EmailAddress)]
         public string UserName { get; set; }
+
+        [DataType(DataType.EmailAddress)]
+        public string Email { get; set; }
+
 
         [Display(Name = "Age")]
         public string Age { get; set; }

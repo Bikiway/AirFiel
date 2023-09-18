@@ -1,6 +1,7 @@
 ﻿using AirFiel_Mariana_Oliveira.Data.Entities;
 using AirFiel_Mariana_Oliveira.Helpers;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
 
@@ -19,12 +20,79 @@ namespace AirFiel_Mariana_Oliveira.Data
 
         public async Task SeedAsync()
         {
-            await _context.Database.EnsureCreatedAsync();
+            await _context.Database.MigrateAsync();
 
             await _userHelper.CheckRoleAsync("Admin");
             await _userHelper.CheckRoleAsync("Employees");
             await _userHelper.CheckRoleAsync("Customer");
+            await _userHelper.CheckRoleAsync("Anonymous");
 
+            #region
+            //var customer = await _userHelper.GetUserByEmailAsync("");
+            //if(customer == null)
+            //{
+            //    customer = new Users
+            //    {
+            //        FirstName = "",
+            //        LastName = "",
+            //        Email = "",
+            //        UserName = "",
+            //        PhoneNumber = "",
+            //        Age = "",
+            //    };
+
+            //    var resulted = await _userHelper.AddUserAsync(customer, "");
+            //    if(resulted != IdentityResult.Success) 
+            //    {
+            //        throw new InvalidOperationException(resulted.ToString());
+            //    }
+
+            //    await _userHelper.AddUserAsync(customer, "Customer");
+            //    var tokened = await _userHelper.GenerateEmailConfirmationTokenAsync(customer);
+            //    await _userHelper.AddUserAsync(customer, tokened);
+
+            //    var isRole = await _userHelper.IsUserInRoleAsync(customer, "Customer");
+            //    if (isRole) 
+            //    {
+            //        await _userHelper.AddUserAsync(customer, "Customer");
+            //    }
+            //}
+            #endregion
+
+            #region
+            var employee = await _userHelper.GetUserByEmailAsync("sararibeiro@yopmail.com");
+            if (employee == null)
+            {
+                employee = new Users
+                {
+                    FirstName = "Sara",
+                    LastName = "Ribeiro",
+                    Email = "sararibeiro@yopmail.com",
+                    UserName = "sararibeiro@yopmail.com",
+                    PhoneNumber = "913265987",
+                    Age = "31",
+                    Experience = "HR Director",
+                };
+
+                var result = await _userHelper.AddUserAsync(employee, "123456");
+
+                if(result != IdentityResult.Success)
+                {
+                    throw new InvalidOperationException("Could not create employee in seeder");
+                }
+
+                await _userHelper.AddUserToRoleAsync(employee, "Employees");
+                var tokens = await _userHelper.GenerateEmailConfirmationTokenAsync(employee);
+                await _userHelper.ConfirmEmailAsync(employee, tokens);
+
+                var inRole = await _userHelper.IsUserInRoleAsync(employee, "Employees");
+                if(inRole)
+                {
+                    await _userHelper.AddUserToRoleAsync(employee, "Employees");
+                }
+            }
+            #endregion
+            #region
             var user = await _userHelper.GetUserByEmailAsync("mariana.95@outlook.pt");
             if(user == null)
             {
@@ -34,7 +102,6 @@ namespace AirFiel_Mariana_Oliveira.Data
                     LastName = "Oliveira",
                     Email = "mariana.95@outlook.pt",
                     UserName = "mariana.95@outlook.pt",
-                    DateOfBirth = DateTime.Parse(DateTime.Now.ToString("26/09/1995")),
                     PhoneNumber = "123456789",
                     Age= "27",
                     Experience="Administrator",
@@ -57,8 +124,7 @@ namespace AirFiel_Mariana_Oliveira.Data
             {
                 await _userHelper.AddUserToRoleAsync(user, "Admin");
             }
-
-           
+            #endregion
         }
     }
 }

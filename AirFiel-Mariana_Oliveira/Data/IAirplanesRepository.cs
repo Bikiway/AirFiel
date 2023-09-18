@@ -10,6 +10,8 @@ namespace AirFiel_Mariana_Oliveira.Data
     {
         public IQueryable<Airplanes> GetAllWithUsers();
 
+        //(int capacity1, int capacity2) GetCapacity(int airplaneId);
+
         IEnumerable<SelectListItem> GetComboAirplanes();
     }
 }

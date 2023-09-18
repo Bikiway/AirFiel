@@ -10,6 +10,7 @@ using AirFiel_Mariana_Oliveira.Data.Entities;
 using AirFiel_Mariana_Oliveira.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using AirFiel_Mariana_Oliveira.Models;
+using System.Net.Http;
 
 namespace AirFiel_Mariana_Oliveira.Controllers
 {
@@ -19,7 +20,6 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         private readonly IConverterHelper _converterHelper;
         private readonly ICitiesRepository _cityRepository;
         private readonly IImageHelper _imageHelper;
-
 
         public CitiesController(IImageHelper imageHelper, IUserHelper userHelper, ICitiesRepository repository, IConverterHelper converterHelper)
         {

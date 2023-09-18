@@ -26,5 +26,8 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
 
         [Display(Name="City")]
         public string FullCityName => $"{Name}, {CountryName}";
+
+
+        public string FullAirportAndCityName => $"{Name}, {Airport}";
     }
 }

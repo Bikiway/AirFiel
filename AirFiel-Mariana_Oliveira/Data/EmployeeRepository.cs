@@ -24,7 +24,7 @@ namespace AirFiel_Mariana_Oliveira.Data
         {
             var list = _context.Employee.Select(p => new SelectListItem
             {
-                Text = p.EmployeeFullName,
+                Text = p.NameAndExperience,
                 Value = p.Id.ToString(),
             }).ToList();
 

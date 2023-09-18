@@ -1,0 +1,161 @@
+﻿@model IEnumerable<AirFiel_Mariana_Oliveira.Data.Entities.RoutesDetailsTemp>
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<p>
+    <a asp-action="AddRoutes" class="btn btn-success">Add Route</a>
+    <a asp-action="ConfirmRoute" class="btn btn-primary" id="btnConfirm">Confirm Route</a>
+</p>
+
+<table class="table">
+
+    <thead>
+
+        <tr>
+
+            <th>@Html.DisplayNameFor(model=>model.airplanes)</th>
+            <th>@Html.DisplayNameFor(model=>model.originCities)</th>
+            <th>@Html.DisplayNameFor(model=>model.destinationCities)</th>
+            <th>@Html.DisplayNameFor(model=>model.pilotEmployees)</th>
+            <th>@Html.DisplayNameFor(model=>model.coPilotEmployees)</th>
+            <th>@Html.DisplayNameFor(model=>model.Depart)</th>
+            <th>@Html.DisplayNameFor(model=>model.Return)</th>
+            <th>@Html.DisplayNameFor(model=>model.FullPrice)</th>
+            <th>@Html.DisplayNameFor(model=>model.TravelsPerMonth)</th>
+            <th>@Html.DisplayNameFor(model=>model.ValuePerMonth)</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var it in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelitem => it.airplanes.Name)
+                </td>
+                 <td>
+                    @Html.DisplayFor(modelitem => it.originCities.FullAirportAndCityName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelitem => it.destinationCities.FullAirportAndCityName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelitem => it.pilotEmployees.NameAndExperience)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelitem => it.coPilotEmployees.NameAndExperience)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelitem => it.Depart)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelitem => it.Return)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelitem => it.FullPrice)
+                </td>
+                  <td>
+                    @Html.DisplayFor(modelitem => it.TravelsPerMonth)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelitem => it.ValuePerMonth)
+                </td>
+
+                <td id="@it.Id">
+                    <a asp-action="IncreaseTravels" asp-route-id="@it.Id" class="btn btn-warning">+</a>
+                    <a asp-action="DecreaseTravels"  asp-route-id="@it.Id" class="btn btn-info">-</a>
+                    <a asp-action="DeleteRoutes" asp-route-id="@it.Id" class="btn btn-danger" id="btnDeleteItem">Delete</a>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+
+<div id="confirmDialog" class="modal fade">
+
+    <div class="modal-dialog modal-sm">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title">Confirm Route</h4>
+                <button type="button" class="close" data-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Do you want to confirm the order?</p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="btnYes">Yes</button>
+                <button type="button" class="btn btn-success" id="btnNo">No</button>
+                </div>
+        </div>
+    </div>
+</div>
+
+<div id="deleteDialog" class="modal fade">
+
+    <div class="modal-dialog modal-sm">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title">Delete</h4>
+                <button type="button" class="close" data-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete?</p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="btnYesDelete">Delete</button>
+                <button type="button" class="btn btn-success" id="btnNoDelete">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+    $(document).ready(function()
+    {
+        var id = 0;
+
+        $("#btnConfirm").click(function()
+        {
+            $("#confirmDialog").modal("show");
+            return false;
+        });
+        $("#btnNo").click(function()
+        {
+            $("#confirmDialog").modal("hide");
+            return false;
+        });
+        $("#btnYes").click(function()
+        {
+            window.location.href = "/Routes/ConfirmRoute";
+        });
+
+            $("a[id*= btnDeleteItem]").click(function () {
+                id = $(this).parent()[0].id;
+                $("#deleteDialog").modal("show");
+                return false;
+            });
+            $("#btnNoDelete").click(function () {
+                $("#deleteDialog").modal("hide");
+                return false;
+            });
+            $("#btnYesDelete").click(function () {
+                window.location.href = "/Routes/DeleteRoutes/" + id;
+            });
+    });    
+    </script>
+}
+

@@ -29,14 +29,9 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="BirthDate" class="control-label"></label>
-                <div class="input-group date" data-provide="datepicker">
-                    <input type="text" asp-for="BirthDate" class="form-control" />
-                    <div class="input-group-append">
-                        <scan class="input-group-text"></scan>
-                    </div>
-                    <span asp-validation-for="BirthDate" class="text-danger"></span>
-                </div>
+                <label asp-for="Age">Age</label>
+                <input asp-for="Age" class="form-control" />
+                <span asp-validation-for="Age" class="text-warning"></span>
             </div>
 
             <div class="form-group">
@@ -53,15 +48,5 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <script type="text/javascript">
-        $(documen).ready(function () {
-            var userLang = navigator.language || navigator.userLanguage;
-            console.log(userLang);
-            var options = $.extend({}, // empty object
-                $.datepicker.regional[pt - Pt],
-                { dateFormat: "dd/mm/yyyy" });
-            $(".date").datepicker(options);
-        });
-    </script>
 }
 

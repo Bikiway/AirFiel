@@ -1,0 +1,146 @@
+﻿@model IEnumerable<AirFiel_Mariana_Oliveira.Data.Entities.Routes>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Plan your trip</h1>
+@if(this.User.IsInRole("Employees"))
+{
+ <p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>   
+}
+
+<table class="table">
+    <thead>
+        <tr>
+           @if (this.User.IsInRole("Admin") && (this.User.IsInRole("Employees")))
+            {
+                <th>
+                    @Html.DisplayNameFor(model => model.users.FullName)
+                </th>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.FullPrice)
+                </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.FullCapacity)
+            </th>
+
+            }
+            <th>
+                @Html.DisplayNameFor(model => model.AirplaneName)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Destination)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Origin)
+            </th>
+               
+            <th>
+                @Html.DisplayNameFor(model => model.Lines)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Depart)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Return)
+            </th>  
+            
+            <th>
+                @Html.DisplayNameFor(model => model.PricePerTicket)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Pilot)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.CoPilot)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.TravelsPerMonth)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+               @if (this.User.IsInRole("Admin") && (this.User.IsInRole("Employees")))
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.users.FullName)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FullPrice)
+                    </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.FullCapacity)
+                </td>
+
+                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.AirplaneName.Name)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Destination.FullAirportAndCityName)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Origin.FullAirportAndCityName)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Lines)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Depart)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Return)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.PricePerTicket)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Pilot.NameAndExperience)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.CoPilot.NameAndExperience)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.TravelsPerMonth)
+                </td>
+
+                @if (this.User.IsInRole("Customer"))
+                {
+                    <td>
+                        <a asp-action="Create" asp-route-id="@item.Id" class="btn btn-primary">Buy</a>
+                    </td>
+                }
+
+                <td>
+                    <a asp-action="SaveRoute" asp-route-id="@item.Id" class="btn btn-info">Save</a> |
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

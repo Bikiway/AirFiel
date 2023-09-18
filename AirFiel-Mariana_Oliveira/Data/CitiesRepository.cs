@@ -25,7 +25,7 @@ namespace AirFiel_Mariana_Oliveira.Data
         {
             var list = _dataContext.City.Select(p => new SelectListItem
             {
-                Text = p.Name,
+                Text = p.FullAirportAndCityName,
                 Value = p.Id.ToString(),
             }).ToList();
 

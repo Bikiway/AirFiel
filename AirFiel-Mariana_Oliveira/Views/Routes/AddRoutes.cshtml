@@ -1,0 +1,102 @@
+﻿@model AirFiel_Mariana_Oliveira.Models.AddRouteViewModel
+@{
+    ViewData["Title"] = "AddRoutes";
+}
+
+<h1>AddRoutes</h1>
+
+<div class="row">
+
+    <div class="col-md-4">
+        <form asp-action="AddRoutes">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="AirplaneId" class="control-label">Planes</label>
+                <select asp-for="AirplaneId" asp-items="Model.Plane" class="form-control"></select>
+                <span asp-validation-for="AirplaneId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OriginId" class="control-label">Depart City</label>
+                <select asp-for="OriginId" asp-items="Model.Origem" class="form-control"></select>
+                <span asp-validation-for="OriginId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DestinationId" class="control-label">Arrival City</label>
+                <select asp-for="DestinationId" asp-items="Model.Destino" class="form-control"></select>
+                <span asp-validation-for="DestinationId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Depart" class="control-label"></label>
+                <div class="input-group date" data-provide="datepicker">
+                    <input type="text" asp-for="Depart" class="form-control" />
+                    <div class="input-group-append">
+                        <scan class="input-group-text"></scan>
+                    </div>
+                    <span asp-validation-for="Depart" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Return" class="control-label"></label>
+                <div class="input-group date" data-provide="datepicker">
+                    <input type="text" asp-for="Return" class="form-control" />
+                    <div class="input-group-append">
+                        <scan class="input-group-text"></scan>
+                    </div>
+                    <span asp-validation-for="Return" class="text-danger"></span>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label asp-for="PilotsId" class="control-label">Pilot</label>
+                <select asp-for="PilotsId" asp-items="Model.Pilot" class="form-control"></select>
+                <span asp-validation-for="PilotsId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CoPilotsId" class="control-label">Co-Pilot</label>
+                <select asp-for="CoPilotsId" asp-items="Model.CoPilot" class="form-control"></select>
+                <span asp-validation-for="CoPilotsId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="QuantityOfTravels" class="control-label">Quantity Of Travels/Month</label>
+                <input asp-for="QuantityOfTravels" class="form-control" />
+                <span asp-validation-for="QuantityOfTravels" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="priceId" class="control-label">Full Price/Trip</label>
+                <input asp-for="priceId" class="form-control" />
+                <span asp-validation-for="priceId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-success">Back to List</a>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript">
+        $(document).ready(function (){
+            var userLang = navigator.language || navigator.userLanguage;
+            console.log(userLang);
+            var options = $.extend({}, // empty object
+                $.datepicker.regional[pt-Pt],
+            {dateFormat: "dd/mm/yyyy"});
+            $(".date").datepicker(options);
+            });
+    </script>
+}
+

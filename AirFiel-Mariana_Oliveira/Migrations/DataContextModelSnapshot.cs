@@ -26,11 +26,11 @@ namespace AirFiel_Mariana_Oliveira.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Capacity1")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Capacity1")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Capacity2")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Capacity2")
+                        .HasColumnType("int");
 
                     b.Property<int>("HowManyClasses")
                         .HasColumnType("int");
@@ -48,7 +48,7 @@ namespace AirFiel_Mariana_Oliveira.Migrations
 
                     b.HasIndex("usersId");
 
-                    b.ToTable("airplains");
+                    b.ToTable("airplanes");
                 });
 
             modelBuilder.Entity("AirFiel_Mariana_Oliveira.Data.Entities.Cities", b =>
@@ -93,6 +93,9 @@ namespace AirFiel_Mariana_Oliveira.Migrations
                     b.Property<string>("Age")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Experience")
                         .HasColumnType("nvarchar(max)");
 
@@ -100,10 +103,6 @@ namespace AirFiel_Mariana_Oliveira.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
@@ -133,31 +132,55 @@ namespace AirFiel_Mariana_Oliveira.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("AirplaneName")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("AirplaneNameId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("CoPilot")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Capacity1")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Capacity2")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CoPilotId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Depart")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Destination")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("DestinationId")
+                        .HasColumnType("int");
 
-                    b.Property<double>("FullPrice")
+                    b.Property<double>("Discounts")
                         .HasColumnType("float");
 
-                    b.Property<string>("Origin")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<double>("GetFullPrice")
+                        .HasColumnType("float");
 
-                    b.Property<string>("Pilot")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("OriginId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PilotId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Return")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("usersId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("AirplaneNameId");
+
+                    b.HasIndex("CoPilotId");
+
+                    b.HasIndex("DestinationId");
+
+                    b.HasIndex("OriginId");
+
+                    b.HasIndex("PilotId");
+
+                    b.HasIndex("usersId");
 
                     b.ToTable("Route");
                 });
@@ -169,22 +192,34 @@ namespace AirFiel_Mariana_Oliveira.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<double>("FullPrice")
-                        .HasColumnType("float");
+                    b.Property<DateTime>("Depart")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FullPrice")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Return")
+                        .HasColumnType("datetime2");
 
                     b.Property<int?>("RoutesId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TravelQuantity")
+                    b.Property<int>("TravelsPerMonth")
                         .HasColumnType("int");
 
                     b.Property<int?>("airplanesId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("citysId")
+                    b.Property<int?>("coPilotEmployeesId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("employeesId")
+                    b.Property<int?>("destinationCitiesId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("originCitiesId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("pilotEmployeesId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -193,9 +228,13 @@ namespace AirFiel_Mariana_Oliveira.Migrations
 
                     b.HasIndex("airplanesId");
 
-                    b.HasIndex("citysId");
+                    b.HasIndex("coPilotEmployeesId");
 
-                    b.HasIndex("employeesId");
+                    b.HasIndex("destinationCitiesId");
+
+                    b.HasIndex("originCitiesId");
+
+                    b.HasIndex("pilotEmployeesId");
 
                     b.ToTable("RouteDetails");
                 });
@@ -207,25 +246,49 @@ namespace AirFiel_Mariana_Oliveira.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("TravelQuantity")
+                    b.Property<DateTime>("Depart")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("FullPrice")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("Return")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TravelsPerMonth")
                         .HasColumnType("int");
 
                     b.Property<int?>("airplanesId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("citiesId")
+                    b.Property<int?>("coPilotEmployeesId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("employeesId")
+                    b.Property<int?>("destinationCitiesId")
                         .HasColumnType("int");
+
+                    b.Property<int?>("originCitiesId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("pilotEmployeesId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("userId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("airplanesId");
 
-                    b.HasIndex("citiesId");
+                    b.HasIndex("coPilotEmployeesId");
 
-                    b.HasIndex("employeesId");
+                    b.HasIndex("destinationCitiesId");
+
+                    b.HasIndex("originCitiesId");
+
+                    b.HasIndex("pilotEmployeesId");
+
+                    b.HasIndex("userId");
 
                     b.ToTable("RoutesDetailsTemps");
                 });
@@ -237,15 +300,138 @@ namespace AirFiel_Mariana_Oliveira.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("TicketLetter")
+                    b.Property<string>("ClientFirstName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TicketNumber")
+                    b.Property<string>("ClientLastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DeliveryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("capacityReduced1")
+                        .HasColumnType("int");
+
+                    b.Property<int>("capacityReduced2")
+                        .HasColumnType("int");
+
+                    b.Property<string>("newUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("routesId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("usersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("usersId");
+
+                    b.ToTable("Ticket");
+                });
+
+            modelBuilder.Entity("AirFiel_Mariana_Oliveira.Data.Entities.TicketsDetails", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("PricePerTicket")
+                        .HasColumnType("float");
+
+                    b.Property<int>("QuantityOfPassengers")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TicketsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("routesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("userId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Ticket");
+                    b.HasIndex("TicketsId");
+
+                    b.ToTable("TicketDetails");
+                });
+
+            modelBuilder.Entity("AirFiel_Mariana_Oliveira.Data.Entities.TicketsDetailsTemp", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Age")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)");
+
+                    b.Property<string>("CC")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<bool>("IdaEVolta")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("NIF")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<int>("Passengers")
+                        .HasColumnType("int");
+
+                    b.Property<double>("PricePerTicket")
+                        .HasColumnType("float");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("routesIdId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("userId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("routesIdId");
+
+                    b.HasIndex("userId");
+
+                    b.ToTable("TicketDetailsTemps");
                 });
 
             modelBuilder.Entity("AirFiel_Mariana_Oliveira.Data.Entities.Users", b =>
@@ -263,9 +449,6 @@ namespace AirFiel_Mariana_Oliveira.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -491,6 +674,45 @@ namespace AirFiel_Mariana_Oliveira.Migrations
                     b.Navigation("Users");
                 });
 
+            modelBuilder.Entity("AirFiel_Mariana_Oliveira.Data.Entities.Routes", b =>
+                {
+                    b.HasOne("AirFiel_Mariana_Oliveira.Data.Entities.Airplanes", "AirplaneName")
+                        .WithMany()
+                        .HasForeignKey("AirplaneNameId");
+
+                    b.HasOne("AirFiel_Mariana_Oliveira.Data.Entities.Employees", "CoPilot")
+                        .WithMany()
+                        .HasForeignKey("CoPilotId");
+
+                    b.HasOne("AirFiel_Mariana_Oliveira.Data.Entities.Cities", "Destination")
+                        .WithMany()
+                        .HasForeignKey("DestinationId");
+
+                    b.HasOne("AirFiel_Mariana_Oliveira.Data.Entities.Cities", "Origin")
+                        .WithMany()
+                        .HasForeignKey("OriginId");
+
+                    b.HasOne("AirFiel_Mariana_Oliveira.Data.Entities.Employees", "Pilot")
+                        .WithMany()
+                        .HasForeignKey("PilotId");
+
+                    b.HasOne("AirFiel_Mariana_Oliveira.Data.Entities.Users", "users")
+                        .WithMany()
+                        .HasForeignKey("usersId");
+
+                    b.Navigation("AirplaneName");
+
+                    b.Navigation("CoPilot");
+
+                    b.Navigation("Destination");
+
+                    b.Navigation("Origin");
+
+                    b.Navigation("Pilot");
+
+                    b.Navigation("users");
+                });
+
             modelBuilder.Entity("AirFiel_Mariana_Oliveira.Data.Entities.RoutesDetails", b =>
                 {
                     b.HasOne("AirFiel_Mariana_Oliveira.Data.Entities.Routes", null)
@@ -501,19 +723,31 @@ namespace AirFiel_Mariana_Oliveira.Migrations
                         .WithMany()
                         .HasForeignKey("airplanesId");
 
-                    b.HasOne("AirFiel_Mariana_Oliveira.Data.Entities.Cities", "citys")
+                    b.HasOne("AirFiel_Mariana_Oliveira.Data.Entities.Employees", "coPilotEmployees")
                         .WithMany()
-                        .HasForeignKey("citysId");
+                        .HasForeignKey("coPilotEmployeesId");
 
-                    b.HasOne("AirFiel_Mariana_Oliveira.Data.Entities.Employees", "employees")
+                    b.HasOne("AirFiel_Mariana_Oliveira.Data.Entities.Cities", "destinationCities")
                         .WithMany()
-                        .HasForeignKey("employeesId");
+                        .HasForeignKey("destinationCitiesId");
+
+                    b.HasOne("AirFiel_Mariana_Oliveira.Data.Entities.Cities", "originCities")
+                        .WithMany()
+                        .HasForeignKey("originCitiesId");
+
+                    b.HasOne("AirFiel_Mariana_Oliveira.Data.Entities.Employees", "pilotEmployees")
+                        .WithMany()
+                        .HasForeignKey("pilotEmployeesId");
 
                     b.Navigation("airplanes");
 
-                    b.Navigation("citys");
+                    b.Navigation("coPilotEmployees");
 
-                    b.Navigation("employees");
+                    b.Navigation("destinationCities");
+
+                    b.Navigation("originCities");
+
+                    b.Navigation("pilotEmployees");
                 });
 
             modelBuilder.Entity("AirFiel_Mariana_Oliveira.Data.Entities.RoutesDetailsTemp", b =>
@@ -522,19 +756,68 @@ namespace AirFiel_Mariana_Oliveira.Migrations
                         .WithMany()
                         .HasForeignKey("airplanesId");
 
-                    b.HasOne("AirFiel_Mariana_Oliveira.Data.Entities.Cities", "cities")
+                    b.HasOne("AirFiel_Mariana_Oliveira.Data.Entities.Employees", "coPilotEmployees")
                         .WithMany()
-                        .HasForeignKey("citiesId");
+                        .HasForeignKey("coPilotEmployeesId");
 
-                    b.HasOne("AirFiel_Mariana_Oliveira.Data.Entities.Employees", "employees")
+                    b.HasOne("AirFiel_Mariana_Oliveira.Data.Entities.Cities", "destinationCities")
                         .WithMany()
-                        .HasForeignKey("employeesId");
+                        .HasForeignKey("destinationCitiesId");
+
+                    b.HasOne("AirFiel_Mariana_Oliveira.Data.Entities.Cities", "originCities")
+                        .WithMany()
+                        .HasForeignKey("originCitiesId");
+
+                    b.HasOne("AirFiel_Mariana_Oliveira.Data.Entities.Employees", "pilotEmployees")
+                        .WithMany()
+                        .HasForeignKey("pilotEmployeesId");
+
+                    b.HasOne("AirFiel_Mariana_Oliveira.Data.Entities.Users", "user")
+                        .WithMany()
+                        .HasForeignKey("userId");
 
                     b.Navigation("airplanes");
 
-                    b.Navigation("cities");
+                    b.Navigation("coPilotEmployees");
 
-                    b.Navigation("employees");
+                    b.Navigation("destinationCities");
+
+                    b.Navigation("originCities");
+
+                    b.Navigation("pilotEmployees");
+
+                    b.Navigation("user");
+                });
+
+            modelBuilder.Entity("AirFiel_Mariana_Oliveira.Data.Entities.Tickets", b =>
+                {
+                    b.HasOne("AirFiel_Mariana_Oliveira.Data.Entities.Users", "users")
+                        .WithMany()
+                        .HasForeignKey("usersId");
+
+                    b.Navigation("users");
+                });
+
+            modelBuilder.Entity("AirFiel_Mariana_Oliveira.Data.Entities.TicketsDetails", b =>
+                {
+                    b.HasOne("AirFiel_Mariana_Oliveira.Data.Entities.Tickets", null)
+                        .WithMany("Items")
+                        .HasForeignKey("TicketsId");
+                });
+
+            modelBuilder.Entity("AirFiel_Mariana_Oliveira.Data.Entities.TicketsDetailsTemp", b =>
+                {
+                    b.HasOne("AirFiel_Mariana_Oliveira.Data.Entities.Routes", "routesId")
+                        .WithMany()
+                        .HasForeignKey("routesIdId");
+
+                    b.HasOne("AirFiel_Mariana_Oliveira.Data.Entities.Users", "user")
+                        .WithMany()
+                        .HasForeignKey("userId");
+
+                    b.Navigation("routesId");
+
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -589,6 +872,11 @@ namespace AirFiel_Mariana_Oliveira.Migrations
                 });
 
             modelBuilder.Entity("AirFiel_Mariana_Oliveira.Data.Entities.Routes", b =>
+                {
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("AirFiel_Mariana_Oliveira.Data.Entities.Tickets", b =>
                 {
                     b.Navigation("Items");
                 });

@@ -33,6 +33,8 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         {
             return View(_repository.GetAllWithUser().OrderBy(e => e.Name));
         }
+
+
         [Authorize(Roles = "Admin")]
         // GET: Airplanes/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -118,7 +120,7 @@ namespace AirFiel_Mariana_Oliveira.Controllers
             {
                 try
                 {
-                    var path = model.ImageFullPath;
+                    var path = model.ImagePlane;
 
                     if(model.ImageFile != null && model.ImageFile.Length > 0)
                     {

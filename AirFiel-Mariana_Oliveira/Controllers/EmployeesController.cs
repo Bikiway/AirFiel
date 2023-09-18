@@ -73,11 +73,11 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Create(EmployeeViewModel model, ChangeEmployeeUserViewModel register)
+        public async Task<IActionResult> Create(EmployeeViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = await _userHelper.GetUserByEmailAsync(register.UserName);
+                var user = await _userHelper.GetUserByEmailAsync(model.UserName);
 
                 if (user == null)
                 {
@@ -86,29 +86,29 @@ namespace AirFiel_Mariana_Oliveira.Controllers
                     user = new Users
                     {
                         //Id = change.UserName,
-                        FirstName = register.FirstName,
-                        LastName = register.LastName,
-                        Email = register.UserName,
-                        UserName = register.UserName,
-                        Age = register.Age,
-                        PhoneNumber = register.PhoneNumber,
-                        Experience = register.Experience,
-                        ImageUserProfile = register.ProfileImage,
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                        Email = model.UserName,
+                        UserName = model.UserName,
+                        Age = model.Age,
+                        PhoneNumber = model.PhoneNumber,
+                        Experience = model.Experience,
+                        ImageUserProfile = model.ProfileImage,
                     };
 
                     //Caso não consiga criar um login novo
 
-                    var result = await _userHelper.AddUserAsync(user, register.Password);
+                    var result = await _userHelper.AddUserAsync(user, model.Password);
                     if (result != IdentityResult.Success)
                     {
                         ModelState.AddModelError(string.Empty, "The user couldn't be created.");
-                        return View(register);
+                        return View(model);
                     }
 
                     //Image
                     var path = string.Empty;
 
-                    if (register.ProfileImage != null && register.ProfileImage.Length > 0)
+                    if (model.ImageProfile != null && model.ImageProfile.Length > 0)
                     {
                         path = await _imageHelper.UploadImageAsync(model.ImageProfile, "employees");
                     }
@@ -122,9 +122,9 @@ namespace AirFiel_Mariana_Oliveira.Controllers
                     }, protocol: HttpContext.Request.Scheme);
 
 
-                    Response response = _mailHelper.SendEmail(register.UserName, "Email Confirmation AirFiel", $"<h1>Employee Email Confirmation</h1>" +
+                    Response response = _mailHelper.SendEmail(model.UserName, "Email Confirmation AirFiel", $"<h1>Employee Email Confirmation</h1>" +
                         $"<h2>Welcome to our team!</h2>" +
-                        $"<h3>Please click in this link</h3>" +
+                        $"<h3>{user.FirstName} {user.LastName}, please click in this link</h3>" +
                         $"</br>" +
                         $"</br>" +
                         $"<a href = \"{tokenLink}\">Confirm Employee Email</a>");
@@ -133,23 +133,20 @@ namespace AirFiel_Mariana_Oliveira.Controllers
                     {
                         ViewBag.Message = "The email has been sent.";
 
-                        var employees = _converterHelper.ToEmployee(register, model, path, true);
+                        var employees = _converterHelper.ToEmployee(model, path, true);
 
                         employees.Users = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                         await _employeeRepository.CreateAsync(employees);
+                        await _userHelper.AddUserToRoleAsync(employees.Users, "Employees");
 
-                        return View(register);
+                        return View(model);
                     }
-
-
-
                 }
-
 
                 ModelState.AddModelError(string.Empty, "The user couldn't be logged.");
 
             }
-            return View(register);
+            return View(model);
         }
 
 
@@ -181,16 +178,15 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         public async Task<IActionResult> Edit(EmployeeViewModel model)
         {
             var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
-            var models = new ChangeEmployeeUserViewModel();
 
             if (user != null)
             {
                 try
                 {
-                    models.FirstName = user.FirstName;
-                    models.LastName = user.LastName;
-                    models.Age = user.Age;
-                    models.PhoneNumber = user.PhoneNumber;
+                    model.FirstName = user.FirstName;
+                    model.LastName = user.LastName;
+                    model.Age = user.Age;
+                    model.PhoneNumber = user.PhoneNumber;
                     model.ProfileImage = user.ImageUserProfile;
 
                     var path = model.ProfileImage;
@@ -200,7 +196,7 @@ namespace AirFiel_Mariana_Oliveira.Controllers
                         path = await _imageHelper.UploadImageAsync(model.ImageProfile, "employees");
                     }
 
-                    var employees = _converterHelper.ToEmployee(models, model, path, false);
+                    var employees = _converterHelper.ToEmployee(model, path, false);
 
                     employees.Users = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                     await _employeeRepository.UpdateAsync(employees);

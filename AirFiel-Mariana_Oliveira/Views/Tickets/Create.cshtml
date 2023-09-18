@@ -1,0 +1,172 @@
+﻿@model IEnumerable<AirFiel_Mariana_Oliveira.Data.Entities.TicketsDetailsTemp>
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<p>
+    <a asp-action="AddTicket" class="btn btn-success">Add Ticket</a>
+    <a asp-action="ConfirmReservation" class="btn btn-primary" id="btnConfirm">Confirm your reservation</a>
+</p>
+<table class="table">
+
+    <thead>
+        <tr>
+
+            <th>
+                @Html.DisplayNameFor(model=>model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model=>model.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model=>model.Age)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model=>model.CC)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model=>model.NIF)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model=>model.IdaEVolta)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model=>model.Passengers)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model=>model.PricePerTicket)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model=>model.TravelPrice)
+            </th>
+
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                    @Html.DisplayFor(modelitem=>item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelitem=>item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelitem=>item.Age)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelitem=>item.CC)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelitem=>item.NIF)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelitem=>item.IdaEVolta)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelitem=>item.Passengers)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelitem=>item.PricePerTicket)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelitem=>item.TravelPrice)
+                </td>
+
+                <td id="@item.Id">
+                    <a asp-action="Increase" asp-route-id="@item.Id" class="btn btn-warning">+</a>
+                    <a asp-action="Decrease" asp-route-id="@item.Id" class="btn btn-info">-</a>
+                    <a asp-action="DeleteTicket" asp-route-id="@item.Id" class="btn btn-danger" id="btnDeleteItem">Delete</a>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+
+</table>
+
+<div id="confirmDialog" class="modal fade">
+
+    <div class="modal-dialog modal-sm">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title">Confirm reservation?</h4>
+                <button type="button" class="close" data-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Do you want to reserve?</p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="btnYes">Yes</button>
+                <button type="button" class="btn btn-success" id="btnNo">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="deleteDialog" class="modal fade">
+
+    <div class="modal-dialog modal-sm">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title">Delete</h4>
+                <button type="button" class="close" data-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete?</p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="btnYesDelete">Delete</button>
+                <button type="button" class="btn btn-success" id="btnNoDelete">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+    {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var id = 0;
+
+            $("#btnConfirm").click(function () {
+                $("#confirmDialog").modal("show");
+                return false;
+            });
+            $("#btnNo").click(function () {
+                $("#confirmDialog").modal("hide");
+                return false;
+            });
+            $("#btnYes").click(function () {
+                window.location.href = "/Orders/ConfirmOrder";
+            });
+
+            $("a[id*= btnDeleteItem]").click(function () {
+                id = $(this).parent()[0].id;
+                $("#deleteDialog").modal("show");
+                return false;
+            });
+            $("#btnNoDelete").click(function () {
+                $("#deleteDialog").modal("hide");
+                return false;
+            });
+            $("#btnYesDelete").click(function () {
+                window.location.href = "/Orders/DeleteItem/" + id;
+            });
+        });
+    </script>
+}
+
+
