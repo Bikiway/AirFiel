@@ -28,35 +28,21 @@ namespace AirFiel_Mariana_Oliveira.Data
             await _userHelper.CheckRoleAsync("Anonymous");
 
             #region
-            //var customer = await _userHelper.GetUserByEmailAsync("");
-            //if(customer == null)
-            //{
-            //    customer = new Users
-            //    {
-            //        FirstName = "",
-            //        LastName = "",
-            //        Email = "",
-            //        UserName = "",
-            //        PhoneNumber = "",
-            //        Age = "",
-            //    };
 
-            //    var resulted = await _userHelper.AddUserAsync(customer, "");
-            //    if(resulted != IdentityResult.Success) 
-            //    {
-            //        throw new InvalidOperationException(resulted.ToString());
-            //    }
+                var resulted = await _userHelper.AddUserAsync(null, null);
 
-            //    await _userHelper.AddUserAsync(customer, "Customer");
-            //    var tokened = await _userHelper.GenerateEmailConfirmationTokenAsync(customer);
-            //    await _userHelper.AddUserAsync(customer, tokened);
+                if (resulted != IdentityResult.Success)
+                {
+                    throw new InvalidOperationException("Could not create the anonymous user in Seeder");
+                }
 
-            //    var isRole = await _userHelper.IsUserInRoleAsync(customer, "Customer");
-            //    if (isRole) 
-            //    {
-            //        await _userHelper.AddUserAsync(customer, "Customer");
-            //    }
-            //}
+                var isRole = await _userHelper.IsUserInRoleAsync(null, "Anonymous");
+                if (!isRole)
+                {
+                    await _userHelper.AddUserToRoleAsync(null, "Anonymous");
+                }
+            
+
             #endregion
 
             #region
@@ -76,7 +62,7 @@ namespace AirFiel_Mariana_Oliveira.Data
 
                 var result = await _userHelper.AddUserAsync(employee, "123456");
 
-                if(result != IdentityResult.Success)
+                if (result != IdentityResult.Success)
                 {
                     throw new InvalidOperationException("Could not create employee in seeder");
                 }
@@ -86,7 +72,7 @@ namespace AirFiel_Mariana_Oliveira.Data
                 await _userHelper.ConfirmEmailAsync(employee, tokens);
 
                 var inRole = await _userHelper.IsUserInRoleAsync(employee, "Employees");
-                if(inRole)
+                if (inRole)
                 {
                     await _userHelper.AddUserToRoleAsync(employee, "Employees");
                 }
@@ -94,7 +80,7 @@ namespace AirFiel_Mariana_Oliveira.Data
             #endregion
             #region
             var user = await _userHelper.GetUserByEmailAsync("mariana.95@outlook.pt");
-            if(user == null)
+            if (user == null)
             {
                 user = new Users
                 {
@@ -103,13 +89,13 @@ namespace AirFiel_Mariana_Oliveira.Data
                     Email = "mariana.95@outlook.pt",
                     UserName = "mariana.95@outlook.pt",
                     PhoneNumber = "123456789",
-                    Age= "27",
-                    Experience="Administrator",
+                    Age = "27",
+                    Experience = "Administrator",
                 };
 
                 var result = await _userHelper.AddUserAsync(user, "123456");
 
-                if(result != IdentityResult.Success)
+                if (result != IdentityResult.Success)
                 {
                     throw new InvalidOperationException("Could not create the user in Seeder");
                 }
@@ -120,7 +106,7 @@ namespace AirFiel_Mariana_Oliveira.Data
             }
 
             var isInRole = await _userHelper.IsUserInRoleAsync(user, "Admin");
-            if(isInRole) 
+            if (isInRole)
             {
                 await _userHelper.AddUserToRoleAsync(user, "Admin");
             }

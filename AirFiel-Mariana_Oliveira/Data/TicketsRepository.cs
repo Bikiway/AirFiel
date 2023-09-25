@@ -282,5 +282,10 @@ namespace AirFiel_Mariana_Oliveira.Data
             return new string(Enumerable.Repeat(chars, 6)
                 .Select(c => c[random.Next(c.Length)]).ToArray());
         }
+
+        public IQueryable GetAllWithUsers()
+        {
+            return _dataContext.Ticket.Include(t => t.users);
+        }
     }
 }

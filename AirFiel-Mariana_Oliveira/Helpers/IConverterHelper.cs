@@ -1,6 +1,7 @@
 ﻿using AirFiel_Mariana_Oliveira.Data.Entities;
 using AirFiel_Mariana_Oliveira.Models;
 using System;
+using System.Collections.Generic;
 
 namespace AirFiel_Mariana_Oliveira.Helpers
 {
@@ -11,7 +12,7 @@ namespace AirFiel_Mariana_Oliveira.Helpers
 
 
         //City converter helper
-        Cities ToCities(CitiesViewModel model, string imageId, bool isNew);
+        Cities ToCities(CitiesViewModel model, string flags, bool isNew);
         CitiesViewModel ToCitiesViewModel(Cities cities);
 
         //Employee converter helper

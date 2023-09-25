@@ -1,20 +1,21 @@
 ﻿using AirFiel_Mariana_Oliveira.Data.Entities;
 using AirFiel_Mariana_Oliveira.Models;
 using System;
+using System.Collections.Generic;
 
 namespace AirFiel_Mariana_Oliveira.Helpers
 {
     public class ConverterHelper : IConverterHelper
     {
-        public Cities ToCities(CitiesViewModel model, string imageId, bool isNew)
+        public Cities ToCities(CitiesViewModel model, string flags, bool isNew)
         {
             return new Cities
             {
-                Id = isNew ? 0 : model.Id,
+                Id = isNew? 0 : model.Id,
                 Name = model.Name,
-                Flags = imageId,
-                Airport = model.Airport,
                 CountryName = model.CountryName,
+                Flags = flags,
+                Airport = model.Airport,
                 Description = model.Description,
                 Users = model.Users,
             };

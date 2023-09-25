@@ -33,6 +33,7 @@ namespace AirFiel_Mariana_Oliveira.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("HowManyClasses")
+                        .HasMaxLength(1)
                         .HasColumnType("int");
 
                     b.Property<string>("ImagePlane")

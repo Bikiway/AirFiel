@@ -25,6 +25,8 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\images\employees\" />
+    <Folder Include="wwwroot\images\flags\" />
+    <Folder Include="wwwroot\images\planes\" />
   </ItemGroup>
 
 </Project>

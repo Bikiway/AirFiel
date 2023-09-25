@@ -32,7 +32,7 @@ namespace AirFiel_Mariana_Oliveira.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Employees")]
+       // [Authorize(Roles = "Employees")]
         public async Task<IActionResult> Create()
         {
             var model = await _routesRepository.GetDetailsTempsAsync(this.User.Identity.Name);
@@ -61,7 +61,7 @@ namespace AirFiel_Mariana_Oliveira.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Employees")]
+      //  [Authorize(Roles = "Employees")]
         [HttpPost]
         public async Task<IActionResult> AddRoutes(AddRouteViewModel model)
         {
@@ -74,7 +74,7 @@ namespace AirFiel_Mariana_Oliveira.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Employees")]
+  //      [Authorize(Roles = "Employees")]
         public async Task<IActionResult> DeleteRoutes(int? Id)
         {
             if (Id == null)
@@ -110,7 +110,7 @@ namespace AirFiel_Mariana_Oliveira.Controllers
             return RedirectToAction("Create");
         }
 
-        [Authorize(Roles = "Employees")]
+     //   [Authorize(Roles = "Employees")]
         public async Task<IActionResult> ConfirmRoute()
         {
             var response = await _routesRepository.ConfirmRouteAsync(this.User.Identity.Name);
@@ -123,7 +123,7 @@ namespace AirFiel_Mariana_Oliveira.Controllers
             return RedirectToAction("Create");
         }
 
-        [Authorize(Roles = "Employees")]
+      //  [Authorize(Roles = "Employees")]
         public async Task<IActionResult> SaveRoute(int? Id)
         {
             if (Id == null)
@@ -146,7 +146,7 @@ namespace AirFiel_Mariana_Oliveira.Controllers
             return View(model);
         }
 
-        [Authorize(Roles = "Employees")]
+       // [Authorize(Roles = "Employees")]
         [HttpPost]
         public async Task<IActionResult> SaveRoute(SaveRouteIdViewModel model)
         {

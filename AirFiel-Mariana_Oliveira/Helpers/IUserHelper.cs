@@ -7,6 +7,8 @@ namespace AirFiel_Mariana_Oliveira.Helpers
 {
     public interface IUserHelper
     {
+        Task<IdentityResult> AnonymousPersonAsync(Users user, string password);
+
         Task<Users> GetUserByEmailAsync(string email);
 
         Task<IdentityResult> AddUserAsync(Users user, string password);//Vai receber o user que quero criar e a password

@@ -21,6 +21,27 @@ namespace AirFiel_Mariana_Oliveira.Data
             return _dataContext.City.Include(p => p.Users);
         }
 
+        //Combox da view das Cities: countries
+        public IEnumerable<SelectListItem> GetCountriesList()
+        {
+           var list = _dataContext.City.Select(c => new SelectListItem
+           {
+               Text = c.Flags,
+               Value = c.Id.ToString(),
+           }).ToList();
+
+            list.Insert(0, new SelectListItem { 
+                Text = "(Select a Flag)",
+                Value = "0",
+            });
+
+            return list;
+        }
+
+
+
+
+        //ComboBox da view das Routes
         public IEnumerable<SelectListItem> GetComboCities()
         {
             var list = _dataContext.City.Select(p => new SelectListItem

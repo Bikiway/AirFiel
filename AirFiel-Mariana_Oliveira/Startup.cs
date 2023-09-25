@@ -62,10 +62,7 @@ namespace AirFiel_Mariana_Oliveira
             services.AddDbContext<DataContext>(cfg =>
             {
                 cfg.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
-                cfg.UseinMemoryDatabase("API");
             });
-
-            services.AddEndPointApiExplorer();
 
             services.AddFlashMessage();
 

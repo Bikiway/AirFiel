@@ -10,6 +10,7 @@ namespace AirFiel_Mariana_Oliveira.Data
     {
         public IQueryable<Cities> GetAllWithUsers();
 
+        IEnumerable<SelectListItem> GetCountriesList();
         IEnumerable<SelectListItem> GetComboCities();
     }
 }

@@ -174,13 +174,7 @@ namespace AirFiel_Mariana_Oliveira.Data
             var user = await _userHelper.GetUserByEmailAsync(userName);
             if (user == null)
             {
-                return null;
-            }
-
-            if (await _userHelper.IsUserInRoleAsync(user, "Admin"))
-            {
                 return _context.Route
-                    .Include(o => o.users)
                     .Include(o => o.Items)
                     .ThenInclude(o => o.originCities)
                     .Include(o => o.Items)
@@ -190,25 +184,44 @@ namespace AirFiel_Mariana_Oliveira.Data
                     .Include(o => o.Items)
                     .ThenInclude(o => o.coPilotEmployees)
                     .Include(o => o.Items)
-                    .ThenInclude(o => o.originCities)
-                    .Include(o => o.Items)
                     .ThenInclude(o => o.airplanes)
-                    .OrderByDescending(o => o.AirplaneName);
+                    .Where(o => o.users == user)
+                    .OrderByDescending(o => o.AirplaneName); 
             }
 
-            return _context.Route
-                .Include(o => o.Items)
-                .ThenInclude(o => o.originCities)
-                .Include(o => o.Items)
-                .ThenInclude(o => o.destinationCities)
-                .Include(o => o.Items)
-                .ThenInclude(o => o.pilotEmployees)
-                .Include(o => o.Items)
-                .ThenInclude(o => o.coPilotEmployees)
-                .Include(o => o.Items)
-                .ThenInclude(o => o.airplanes)
-                .Where(o => o.users == user)
-                .OrderByDescending(o => o.AirplaneName);
+                if (await _userHelper.IsUserInRoleAsync(user, "Admin"))
+                {
+                    return _context.Route
+                        .Include(o => o.users)
+                        .Include(o => o.Items)
+                        .ThenInclude(o => o.originCities)
+                        .Include(o => o.Items)
+                        .ThenInclude(o => o.destinationCities)
+                        .Include(o => o.Items)
+                        .ThenInclude(o => o.pilotEmployees)
+                        .Include(o => o.Items)
+                        .ThenInclude(o => o.coPilotEmployees)
+                        .Include(o => o.Items)
+                        .ThenInclude(o => o.originCities)
+                        .Include(o => o.Items)
+                        .ThenInclude(o => o.airplanes)
+                        .OrderByDescending(o => o.AirplaneName);
+                }
+
+                return _context.Route
+                    .Include(o => o.Items)
+                    .ThenInclude(o => o.originCities)
+                    .Include(o => o.Items)
+                    .ThenInclude(o => o.destinationCities)
+                    .Include(o => o.Items)
+                    .ThenInclude(o => o.pilotEmployees)
+                    .Include(o => o.Items)
+                    .ThenInclude(o => o.coPilotEmployees)
+                    .Include(o => o.Items)
+                    .ThenInclude(o => o.airplanes)
+                    .Where(o => o.users == user)
+                    .OrderByDescending(o => o.AirplaneName);
+            
         }
 
         public async Task<Routes> GetRoutesAsync(int id)

@@ -1,6 +1,8 @@
 ﻿using AirFiel_Mariana_Oliveira.Data.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace AirFiel_Mariana_Oliveira.Data
 {
@@ -26,5 +28,6 @@ namespace AirFiel_Mariana_Oliveira.Data
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         { }
+
     }
 }

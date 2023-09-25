@@ -11,6 +11,8 @@ using AirFiel_Mariana_Oliveira.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using AirFiel_Mariana_Oliveira.Models;
 using System.Net.Http;
+using System.Collections.ObjectModel;
+using Newtonsoft.Json;
 
 namespace AirFiel_Mariana_Oliveira.Controllers
 {
@@ -32,7 +34,7 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         // GET: Cities
         public IActionResult Index()
         {
-            return View(_cityRepository.GetAllWithUsers().OrderBy(e => e.Name));
+            return View(_cityRepository.GetAllWithUsers().OrderBy(e => e.Id));
         }
 
         [Authorize(Roles = "Admin")]
@@ -70,14 +72,14 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         {
             if (ModelState.IsValid)
             {
-                var path = string.Empty;
+                var path = model.CountryName;
 
-                if(model.ImageCity != null)
+                if (model.FlagsFile != null && model.FlagsFile.Length > 0)
                 {
-                    path = await _imageHelper.UploadImageAsync(model.ImageCity, "cities");
+                    path = await _imageHelper.UploadImageAsync(model.FlagsFile, "flags");
                 }
 
-                 var citys = _converterHelper.ToCities(model, path, true);
+                var citys = _converterHelper.ToCities(model, path, true);
 
                 citys.Users = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                 await _cityRepository.CreateAsync(citys);
@@ -86,6 +88,7 @@ namespace AirFiel_Mariana_Oliveira.Controllers
             }
             return View(model);
         }
+
 
         // GET: Cities/Edit/5
         [Authorize(Roles = "Admin")]
@@ -117,11 +120,11 @@ namespace AirFiel_Mariana_Oliveira.Controllers
             {
                 try
                 {
-                    var path = model.Flags;
+                    var path = model.CountryName;
 
-                    if(model.ImageCity != null && model.ImageCity.Length > 0)
+                    if (model.FlagsFile != null && model.FlagsFile.Length > 0)
                     {
-                        path = await _imageHelper.UploadImageAsync(model.ImageCity, "cities");
+                        path = await _imageHelper.UploadImageAsync(model.FlagsFile, "flags");
                     }
 
                     var cities = _converterHelper.ToCities(model, path, false);

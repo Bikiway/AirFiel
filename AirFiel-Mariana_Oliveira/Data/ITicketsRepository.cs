@@ -32,6 +32,8 @@ namespace AirFiel_Mariana_Oliveira.Data
 
         Task<double[]> GetPricePerTicketFromRoutes(int Idroutes);
 
+        public IQueryable GetAllWithUsers();
+
         #endregion
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace AirFiel_Mariana_Oliveira.Data.Entities
@@ -24,7 +25,8 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
 
         public Users Users { get; set; }
 
-        [Display(Name="City")]
+        [Display(Name = "City")]
+
         public string FullCityName => $"{Name}, {CountryName}";
 
 

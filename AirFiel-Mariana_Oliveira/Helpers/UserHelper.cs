@@ -27,6 +27,27 @@ namespace AirFiel_Mariana_Oliveira.Helpers
             await _userManager.AddToRoleAsync(user, roleName);
         }
 
+        public async Task<IdentityResult> AnonymousPersonAsync(Users user, string password)
+        {
+            if (user != null && password == null)
+            {
+                user.Email = null;
+                user.UserName = null;
+                user.PasswordHash = null;
+
+                var result = await _userManager.CreateAsync(user);
+
+                if(result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(null, "Anonymous");
+                }
+
+               return result;
+            }
+
+            return IdentityResult.Failed();
+        }
+
         public async Task<IdentityResult> ChangePasswordAsync(Users user, string oldPassword, string newPassword)
         {
             return await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
