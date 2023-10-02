@@ -16,12 +16,7 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
         [Display(Name = "Total of Classes")]
         [MaxLength(1, ErrorMessage = "The field {0} only can contain {1} characters lenght.")]
         [DisplayFormat(DataFormatString = "{0:N0}", ApplyFormatInEditMode = false)]
-        public int HowManyClasses 
-        { get { return HowManyClasses; }
-            set { if (value < 3)
-                { _ = HowManyClasses; } } }
-
-
+        public int HowManyClasses { get; set; }
 
         [Display(Name = "First Class Capacity")]
         public int Capacity1 { get; set; }
