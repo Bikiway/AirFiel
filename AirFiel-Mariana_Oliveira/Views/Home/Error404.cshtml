@@ -1,16 +1,26 @@
 ﻿
 @{
     ViewData["Title"] = "Error404";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h1>Ups! Page not found!!!</h1>
-
 <style>
-    .h1{
+    .h1 {
         text-align: center;
         color: palevioletred;
         border-block-end: solid, 2px;
         border-block-end-color: yellowgreen;
     }
+
+        .h1 animate {
+            animation-delay: -2s;
+            animation-duration: 2s;
+            animation-direction: alternate-reverse;
+            animation-iteration-count: infinite;
+        }
 </style>
+
+
+<h1>Ups! Page not found!!!</h1>
+
+
 

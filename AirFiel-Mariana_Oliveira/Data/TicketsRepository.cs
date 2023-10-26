@@ -1,16 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
 using System;
 using AirFiel_Mariana_Oliveira.Data.Entities;
 using AirFiel_Mariana_Oliveira.Helpers;
 using AirFiel_Mariana_Oliveira.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Mvc;
-using AirFiel_Mariana_Oliveira.Controllers;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace AirFiel_Mariana_Oliveira.Data
 {
@@ -37,23 +32,21 @@ namespace AirFiel_Mariana_Oliveira.Data
 
                 await AddNewUser(user.UserName, "Customer", generatePassword);
                 await _dataContext.SaveChangesAsync();
+            }
 
+            int routesId = _dataContext.Route.FirstOrDefault()?.Id ?? 0;
+            var routeId = GetIdFromRoutes(routesId);
+            var prices = GetPricePerTicketFromRoutes(routesId);
+
+            var route = await _dataContext.Route.FindAsync(routesId);
+
+            if (route == null)
+            {
                 return;
             }
 
-
-            //var userTicket = await _dataContext.Users.FindAsync(model.UserName);
-           // var route = await _dataContext.Route.FindAsync(model.routesId);
-
-            //if (userTicket == null) 
-            //{
-            //    string generatePassword = GeneratePassword();
-
-            //    await AddNewUser(user.UserName, "Customer", generatePassword);
-            //    await _dataContext.SaveChangesAsync();
-            //}
-
             var ticketDetailsTemp = await _dataContext.TicketDetailsTemps
+                .Where(tdt => tdt.user == user && tdt.routesId == route)
                 .Where(tdt => tdt.user == user && tdt.user == user)
                 .FirstOrDefaultAsync();
 
@@ -68,8 +61,8 @@ namespace AirFiel_Mariana_Oliveira.Data
                     CC = model.CC,
                     NIF = model.NIF,
                     IdaEVolta = model.IdaEVolta,
-                   
-                   // PricePerTicket = route.PricePerTicket,
+                    routesId = route,
+                    PricePerTicket = prices.Id,
                     UserName = model.UserName,
                     user = user,
                 };
@@ -90,47 +83,73 @@ namespace AirFiel_Mariana_Oliveira.Data
         public async Task<bool> ConfirmTicketAsync(string userName)
         {
             var user = await _userHelper.GetUserByEmailAsync(userName);
-            if(user == null)
+            if (user == null)
             {
                 return false;
             }
 
             var ticketTemp = await _dataContext.TicketDetailsTemps
                 .Include(x => x.user)
+                .Include(x => x.routesId)
                 .Where(o => o.user == user)
                 .ToListAsync();
 
-            if(ticketTemp == null || ticketTemp.Count == 0)
+            if (ticketTemp == null || ticketTemp.Count == 0)
             {
                 return false;
             }
+
+            int routesId = ticketTemp.FirstOrDefault()?.routesId.Id ?? 0;
+            var capacities = GetCapacitiesFromRoutes(routesId);
+            var routeId = GetIdFromRoutes(routesId);
+            var prices = GetPricePerTicketFromRoutes(routesId);
+            var origin = GetOriginAirport(routesId);
+            var destination = GetDestinationAirport(routesId);
+            var idaVolta = IdaEVoltaBool(routesId);
+            var depart = GetDepartFromRoutes(routesId);
+            var returned = GetReturnFromRoutes(routesId);
 
             var details = ticketTemp.Select(o => new TicketsDetails
             {
                 FirstName = o.FirstName,
                 LastName = o.LastName,
                 QuantityOfPassengers = o.Passengers,
-                PricePerTicket = o.PricePerTicket,
-                routesId = o.routesId.Id,
+                PricePerTicket = prices.Id,
+                routesId = routeId.Id,
+                IdaEVolta = idaVolta.Result,
+                PassengersFirstClass = o.PassengersFirstClass,
+                PassengersSecondClass = o.PassengersSecondClass,
             }).ToList();
 
+            if (user == null)
+            { 
             string password = GeneratePassword();
             string role = ticketTemp.FirstOrDefault()?.UserName;
-            Task <string> users = (Task<string>)AddNewUser(role, "Customer", password);
-            int routesId = ticketTemp.FirstOrDefault()?.routesId.Id??0;
-            var capacities = GetCapacitiesFromRoutes(routesId);
-            var routeId = GetIdFromRoutes(routesId);
-            //var pricePerTicket = GetPricePerTicketFromRoutes(routesId);
+            Task<string> users = (Task<string>)AddNewUser(role, "Customer", password);
+
+                var ticketForNewUser = new Tickets
+                {
+                    newUserId = users.Result,
+                };
+        }
 
             var ticket = new Tickets
             {
-                ClientFirstName = details.FirstOrDefault()?.FirstName,
-                ClientLastName = details.FirstOrDefault()?.LastName,
+                ClientFirstName = details.FirstOrDefault().FirstName,
+                ClientLastName = details.FirstOrDefault().LastName,
+                CC = details.FirstOrDefault().CC,
+                NIF = details.FirstOrDefault().NIF,
                 DeliveryDate = DateTime.Now,
                 capacityReduced1 = (await capacities)[0],
                 capacityReduced2 = (await capacities)[1],
-                routesId = (await routeId)[0],
-                newUserId = users.Result,
+                routesId = await routeId,
+                Origin = await origin,
+                PassengersFirstClass = details.FirstOrDefault().PassengersFirstClass,
+                PassengersSecondClass = details.FirstOrDefault().PassengersSecondClass,
+                Destination = await destination,
+                Return = await returned,
+                Depart = await depart,
+                UserName = user.UserName,
                 users = user,
                 Items = details,
             };
@@ -145,7 +164,7 @@ namespace AirFiel_Mariana_Oliveira.Data
         {
             var deleteTicket = await _dataContext.TicketDetailsTemps.FindAsync(Id);
 
-            if(deleteTicket == null)
+            if (deleteTicket == null)
             {
                 return;
             }
@@ -159,10 +178,10 @@ namespace AirFiel_Mariana_Oliveira.Data
             //Só buscar as reservas de cada cliente
 
             var user = await _userHelper.GetUserByEmailAsync(userName);
-            if(user == null) 
+            if (user == null)
             { return null; }
 
-            if(await _userHelper.IsUserInRoleAsync(user, "Admin"))
+            if (await _userHelper.IsUserInRoleAsync(user, "Admin"))
             {
                 return _dataContext.Ticket
                     .Include(x => x.users)
@@ -173,7 +192,7 @@ namespace AirFiel_Mariana_Oliveira.Data
 
             return _dataContext.Ticket
                 .Include(x => x.Items)
-               // .ThenInclude(x => x.routesId)
+                //.ThenInclude(x => x.routesId)
                 .Where(o => o.users == user)
                 .OrderByDescending(o => o.ClientFirstName);
         }
@@ -188,49 +207,94 @@ namespace AirFiel_Mariana_Oliveira.Data
         {
            var user = await _userHelper.GetUserByEmailAsync(userName);
 
-            if(user == null) { return null; }
+            if (user == null) { return null; }
 
             return _dataContext.TicketDetailsTemps
                 .Include(o => o.user)
                 .Where(o => o.user == user);
         }
 
-        public async Task HowManyPassengersItWillBe(int Id, int quantityOfPassengers)
+        public async Task<bool> IdaEVoltaBool(int Id)
         {
             var tdt = await _dataContext.TicketDetailsTemps.FindAsync(Id);
 
-            if(tdt == null)
-            { return; }
+            if (tdt == null)
+            { return false; }
 
-            tdt.Passengers += quantityOfPassengers;
-
-            if(tdt.Passengers > 0) 
+            if (tdt.IdaEVolta == true)
             {
+                tdt.PricePerTicket *= 2;
+            }
+
                 _dataContext.TicketDetailsTemps.Update(tdt);
+                await _dataContext.SaveChangesAsync();
+
+            return true;
+            }
+
+        public async Task UpdateRoutesAirplanesCapacityAsync(int ticketId)
+        {
+            var ticket = await _dataContext.Ticket.FindAsync(ticketId);
+
+            if (ticket == null)
+            {
+                return;
+        }
+
+            var route = await _dataContext.Route.FindAsync(ticket.routesId);
+
+            if (route == null)
+            {
+                return;
+            }
+
+            var c1 = route.Capacity1 - ticket.PassengersFirstClass;
+            var c2 = route.Capacity2 - ticket.PassengersSecondClass;
+
+            if (c1 >= 0 && c2 >= 0)
+            {
+                route.Capacity1 = c1;
+                route.Capacity2 = c2;
+
+                _dataContext.Route.Update(route);
                 await _dataContext.SaveChangesAsync();
             }
         }
 
+
         public async Task SaveTicket(SaveTicketIdViewModel model)
         {
             var ticket = await _dataContext.Ticket.FindAsync(model.Id);
-            if(ticket == null) { return; }
+            if (ticket == null) { return; }
 
             ticket.DeliveryDate = model.DeliveryDate;
             _dataContext.Ticket.Update(ticket);
             await _dataContext.SaveChangesAsync();
         }
 
+        public async Task ReservationConfirmed(UserSpaceViewModel model)
+        {
+            var ticket = await _dataContext.Ticket.FindAsync(model.Id);
+
+            if (ticket == null) { return; }
+
+            ticket.Id = model.Id;
+            _dataContext.Ticket.Update(ticket);
+            await _dataContext.SaveChangesAsync();
+        }
 
 
         //Helpers
         public async Task<int[]> GetCapacitiesFromRoutes(int Id)
         {
-            var capacities = await _dataContext.Route.FirstOrDefaultAsync(o => o.Id == Id);
+            var route = await _dataContext.Route
+               .Where(r => r.Id == Id)
+               .Select(r => new { r.Capacity1, r.Capacity2 })
+               .FirstOrDefaultAsync();
 
-            if(capacities != null) 
+            if (route != null)
             {
-                return new int[] {capacities.Capacity1, capacities.Capacity2};
+                return new int[] { route.Capacity1, route.Capacity2 };
             }
 
             return null;
@@ -238,11 +302,14 @@ namespace AirFiel_Mariana_Oliveira.Data
 
 
 
-        public async Task<int[]> GetIdFromRoutes(int Idroutes)
+        public async Task<int> GetIdFromRoutes(int Idroutes)
         {
-            var routes = await _dataContext.Route.FirstOrDefaultAsync(r => r.Id == Idroutes);
+            var route = await _dataContext.Route
+                .Where(r => r.Id == Idroutes)
+                .Select(r => r.Id)
+                .FirstOrDefaultAsync();
 
-            return new int[] {routes.Id};
+            return route;
         }
 
 
@@ -256,23 +323,22 @@ namespace AirFiel_Mariana_Oliveira.Data
             password = GeneratePassword();
             var roleExist = await _userHelper.GetUserByEmailAsync(newUser.UserName);
 
-            if(roleExist != null) 
+            if (roleExist != null)
             {
                 await _userHelper.AddUserToRoleAsync(newUser, roleName);
                 await _userHelper.AddUserAsync(newUser, password);
             }
         }
 
-        public async Task<double[]> GetPricePerTicketFromRoutes(int Idroutes)
+        public async Task<double> GetPricePerTicketFromRoutes(int Idroutes)
         {
-            var idExists = await _dataContext.Route.FirstOrDefaultAsync(r => r.Id != Idroutes);
+            var route = await _dataContext.Route
+               .Where(r => r.Id == Idroutes)
+               .Select(r => r.PricePerTicket)
+               .FirstOrDefaultAsync();
 
-            if(idExists != null)
-            {
-                return new double[] { idExists.PricePerTicket };
+            return route;
             }
-            return null;
-        }
 
         private string GeneratePassword()
         {
@@ -287,5 +353,60 @@ namespace AirFiel_Mariana_Oliveira.Data
         {
             return _dataContext.Ticket.Include(t => t.users);
         }
+
+        public async Task<string> GetOriginAirport(int IdRoute)
+        {
+            var origin = await _dataContext.Route
+                .Where(r => r.Id == IdRoute)
+                .Select(r => r.Origin.FullAirportAndCityName)
+                .FirstOrDefaultAsync();
+
+            return origin;
+        }
+
+        public async Task<string> GetDestinationAirport(int IdRoute)
+            {
+            var destination = await _dataContext.Route
+                .Where(r => r.Id == IdRoute)
+                .Select(r => r.Destination.FullAirportAndCityName)
+                .FirstOrDefaultAsync();
+
+            return destination;
+            }
+
+        public async Task<DateTime> GetDepartFromRoutes(int IdRoute)
+        {
+            var departDateString = await _dataContext.Route
+              .Where(d => d.Id == IdRoute)
+              .Select(d => d.Depart.ToShortDateString())
+              .FirstOrDefaultAsync();
+
+            if (DateTime.TryParse(departDateString, out DateTime departDate))
+            {
+                return departDate;
+            }
+            else
+            {
+                throw new Exception("Failed to parse Return date.");
+            }
+        }
+
+        public async Task<DateTime> GetReturnFromRoutes(int IdRoute)
+        {
+            var returnedDateString = await _dataContext.Route
+                .Where(d => d.Id == IdRoute)
+                .Select(d => d.Return.ToShortDateString())
+                .FirstOrDefaultAsync();
+
+            if (DateTime.TryParse(returnedDateString, out DateTime returnedDate))
+            {
+                return returnedDate;
+            }
+            else
+            {
+                throw new Exception("Failed to parse Return date.");
+            }
+            }
+
+        }
     }
-}

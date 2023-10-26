@@ -23,26 +23,20 @@ namespace AirFiel_Mariana_Oliveira.Controllers
             _airplanesRepository = airplanesRepository;
             _employeeRepository = employeeRepository;
             _cityRepository = cityRepository;
-
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var model = await _routesRepository.GetRoutesAsync(this.User.Identity.Name);
             return View(model);
         }
 
-       // [Authorize(Roles = "Employees")]
         public async Task<IActionResult> Create()
         {
             var model = await _routesRepository.GetDetailsTempsAsync(this.User.Identity.Name);
-            if (model != null)
-            {
                 return View(model);
             }
-
-            return View(model);
-        }
 
         public IActionResult AddRoutes()
         {
@@ -61,7 +55,7 @@ namespace AirFiel_Mariana_Oliveira.Controllers
             return View(model);
         }
 
-      //  [Authorize(Roles = "Employees")]
+
         [HttpPost]
         public async Task<IActionResult> AddRoutes(AddRouteViewModel model)
         {
@@ -74,7 +68,7 @@ namespace AirFiel_Mariana_Oliveira.Controllers
             return View(model);
         }
 
-  //      [Authorize(Roles = "Employees")]
+    
         public async Task<IActionResult> DeleteRoutes(int? Id)
         {
             if (Id == null)
@@ -110,7 +104,7 @@ namespace AirFiel_Mariana_Oliveira.Controllers
             return RedirectToAction("Create");
         }
 
-     //   [Authorize(Roles = "Employees")]
+     
         public async Task<IActionResult> ConfirmRoute()
         {
             var response = await _routesRepository.ConfirmRouteAsync(this.User.Identity.Name);
@@ -123,7 +117,7 @@ namespace AirFiel_Mariana_Oliveira.Controllers
             return RedirectToAction("Create");
         }
 
-      //  [Authorize(Roles = "Employees")]
+       
         public async Task<IActionResult> SaveRoute(int? Id)
         {
             if (Id == null)
@@ -146,7 +140,7 @@ namespace AirFiel_Mariana_Oliveira.Controllers
             return View(model);
         }
 
-       // [Authorize(Roles = "Employees")]
+      
         [HttpPost]
         public async Task<IActionResult> SaveRoute(SaveRouteIdViewModel model)
         {

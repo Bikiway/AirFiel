@@ -30,22 +30,16 @@
 
             <div class="form-group">
                 <label asp-for="Depart" class="control-label"></label>
-                <div class="input-group date" data-provide="datepicker">
-                    <input type="text" asp-for="Depart" class="form-control" />
-                    <div class="input-group-append">
-                        <scan class="input-group-text"></scan>
-                    </div>
+                <div class="input-group-date" id="datetimepicker1">
+                    <input type="text" asp-for="Depart" class="form-control"/>
                     <span asp-validation-for="Depart" class="text-danger"></span>
                 </div>
             </div>
 
             <div class="form-group">
                 <label asp-for="Return" class="control-label"></label>
-                <div class="input-group date" data-provide="datepicker">
-                    <input type="text" asp-for="Return" class="form-control" />
-                    <div class="input-group-append">
-                        <scan class="input-group-text"></scan>
-                    </div>
+                <div class="input-group-date" id="datetimepicker2">
+                    <input type="text" asp-for="Return" class="form-control"/>
                     <span asp-validation-for="Return" class="text-danger"></span>
                 </div>
             </div>
@@ -75,8 +69,10 @@
             </div>
 
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-success">Back to List</a>
+                <button type="submit" value="Create" class="btn btn-primary" style="background-color: cadetblue">
+                    <i class="fa fa-plane-departure" style="color: whitesmoke"></i> Create |
+                </button>
+                <a asp-action="Index" style="font-size: 20px; color:darkgoldenrod;">Back to List</a>
             </div>
         </form>
     </div>
@@ -88,15 +84,15 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 
-    <script type="text/javascript">
-        $(document).ready(function (){
-            var userLang = navigator.language || navigator.userLanguage;
-            console.log(userLang);
-            var options = $.extend({}, // empty object
-                $.datepicker.regional[pt-Pt],
-            {dateFormat: "dd/mm/yyyy"});
-            $(".date").datepicker(options);
+    <script>
+            $('#datetimepicker1').datetimepicker({
+                format: 'd/m/Y H:i',
+            });
+
+        $('#datetimepicker2').datetimepicker({
+            format: 'd/m/Y H:i',
             });
     </script>
+
 }
 

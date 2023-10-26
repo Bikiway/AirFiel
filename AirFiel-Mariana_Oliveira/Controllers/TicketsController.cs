@@ -1,10 +1,7 @@
 ﻿using AirFiel_Mariana_Oliveira.Data;
 using AirFiel_Mariana_Oliveira.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using System;
 using System.Threading.Tasks;
 
@@ -37,16 +34,17 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         }
 
         // GET: TicketsController/Create
-        [Authorize(Roles = "Customer")]
-       // [Authorize(Roles = "Anonymous")]
+        [AllowAnonymous]
         public async Task<ActionResult> Create()
         {
             var model = await _ticketRepository.GetTicketsClientInfo(this.User.Identity.Name);
             return View(model);
         }
 
-        public IActionResult AddTicket(TicketsViewModel tvm, int id)
+        public async Task<IActionResult> AddTicket(TicketsViewModel tvm, int id)
         {
+            var routes = await _routesRepository.GetByIdAsync(id);
+
             var model = new TicketsViewModel
             {
                 FirstName = tvm.FirstName,
@@ -56,9 +54,9 @@ namespace AirFiel_Mariana_Oliveira.Controllers
                 UserName = User.Identity.Name,
                 Age = tvm.Age,
                 Passengers = 1,
-                PricePerTicketId = tvm.PricePerTicketId,
+                PricePerTicketId = Convert.ToInt32(routes.PricePerTicket),
                 IdaEVolta = tvm.IdaEVolta,
-                routesId = tvm.routesId,
+                routesId = routes.Id,
             };
 
             return View(model);
@@ -119,7 +117,7 @@ namespace AirFiel_Mariana_Oliveira.Controllers
 
             if (response)
             {
-                return RedirectToAction("Index");
+                return RedirectToAction("ReservationConfirmed");
             }
 
             return RedirectToAction("Create");

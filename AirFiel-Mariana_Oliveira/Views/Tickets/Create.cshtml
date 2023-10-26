@@ -1,6 +1,8 @@
 ﻿@model IEnumerable<AirFiel_Mariana_Oliveira.Data.Entities.TicketsDetailsTemp>
 @{
     ViewData["Title"] = "Create";
+    var ticket = Model;
+
 }
 
 <h1>Create</h1>
@@ -106,8 +108,8 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" id="btnYes">Yes</button>
-                <button type="button" class="btn btn-success" id="btnNo">No</button>
+                <button type="button" class="btn btn-success" id="btnYes">Yes</button>
+                <button type="button" class="btn btn-danger" id="btnNo">No</button>
             </div>
         </div>
     </div>
@@ -150,7 +152,7 @@
                 return false;
             });
             $("#btnYes").click(function () {
-                window.location.href = "/Orders/ConfirmOrder";
+                window.location.href = "/Tickets/ConfirmReservation";
             });
 
             $("a[id*= btnDeleteItem]").click(function () {
@@ -163,7 +165,7 @@
                 return false;
             });
             $("#btnYesDelete").click(function () {
-                window.location.href = "/Orders/DeleteItem/" + id;
+                window.location.href = "/Tickets/DeleteTicket/" + id;
             });
         });
     </script>

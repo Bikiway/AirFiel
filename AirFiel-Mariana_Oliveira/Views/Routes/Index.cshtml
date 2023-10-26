@@ -7,14 +7,14 @@
 @if(this.User.IsInRole("Employees"))
 {
  <p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
+        <a asp-action="Create" class="btn btn-primary" style="font-size: 20px; color: whitesmoke">Create New</a>
 </p>   
 }
 
 <table class="table">
     <thead>
         <tr>
-           @if (this.User.IsInRole("Admin") && (this.User.IsInRole("Employees")))
+           @if (this.User.IsInRole("Admin") || (this.User.IsInRole("Employees")))
             {
                 <th>
                     @Html.DisplayNameFor(model => model.users.FullName)
@@ -27,22 +27,31 @@
             <th>
                 @Html.DisplayNameFor(model => model.FullCapacity)
             </th>
-
-            }
             <th>
                 @Html.DisplayNameFor(model => model.AirplaneName)
+            </th>
+            <th>
+                    @Html.DisplayNameFor(model => model.Lines)
+            </th>
+
+            <th>
+                   @Html.DisplayNameFor(model => model.Pilot)
+            </th>
+               
+            <th>
+                  @Html.DisplayNameFor(model => model.CoPilot)
+            </th>
+
+            <th>
+                   @Html.DisplayNameFor(model => model.TravelsPerMonth)
             </th>
 
             <th>
                 @Html.DisplayNameFor(model => model.Destination)
-            </th>
-
+            </th>  
+            
             <th>
                 @Html.DisplayNameFor(model => model.Origin)
-            </th>
-               
-            <th>
-                @Html.DisplayNameFor(model => model.Lines)
             </th>
 
             <th>
@@ -51,22 +60,10 @@
 
             <th>
                 @Html.DisplayNameFor(model => model.Return)
-            </th>  
-            
+            </th>
+
             <th>
                 @Html.DisplayNameFor(model => model.PricePerTicket)
-            </th>
-
-            <th>
-                @Html.DisplayNameFor(model => model.Pilot)
-            </th>
-
-            <th>
-                @Html.DisplayNameFor(model => model.CoPilot)
-            </th>
-
-            <th>
-                @Html.DisplayNameFor(model => model.TravelsPerMonth)
             </th>
         </tr>
     </thead>
@@ -74,7 +71,7 @@
         @foreach (var item in Model)
         {
             <tr>
-               @if (this.User.IsInRole("Admin") && (this.User.IsInRole("Employees")))
+               @if (this.User.IsInRole("Admin") || (this.User.IsInRole("Employees")))
                 {
                     <td>
                         @Html.DisplayFor(modelItem => item.users.FullName)
@@ -87,24 +84,31 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.FullCapacity)
                 </td>
-
-                }
                 <td>
                     @Html.DisplayFor(modelItem => item.AirplaneName.Name)
                 </td>
-
                 <td>
-                    @Html.DisplayFor(modelItem => item.Destination.FullAirportAndCityName)
+                       @Html.DisplayFor(modelItem => item.Lines)
+                </td>
+                <td>
+                       @Html.DisplayFor(modelItem => item.Pilot.FirstName)
                 </td>
 
                 <td>
-                    @Html.DisplayFor(modelItem => item.Origin.FullAirportAndCityName)
+                       @Html.DisplayFor(modelItem => item.CoPilot.FirstName)
                 </td>
 
                 <td>
-                    @Html.DisplayFor(modelItem => item.Lines)
+                       @Html.DisplayFor(modelItem => item.TravelsPerMonth)
                 </td>
 
+                <td>
+                    @Html.DisplayFor(modelItem => item.Destination.Name)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Origin.Name)
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Depart)
                 </td>
@@ -117,27 +121,15 @@
                     @Html.DisplayFor(modelItem => item.PricePerTicket)
                 </td>
 
-                <td>
-                    @Html.DisplayFor(modelItem => item.Pilot.NameAndExperience)
-                </td>
-
-                <td>
-                    @Html.DisplayFor(modelItem => item.CoPilot.NameAndExperience)
-                </td>
-
-                <td>
-                    @Html.DisplayFor(modelItem => item.TravelsPerMonth)
-                </td>
-
                 @if (this.User.IsInRole("Customer"))
                 {
                     <td>
-                        <a asp-action="Create" asp-route-id="@item.Id" class="btn btn-primary">Buy</a>
+                        <a asp-controller="Tickets" asp-action="Create" asp-route-id="@item.Id" class="btn btn-primary buy-button" style="background-color: whitesmoke; color: grey;">Buy</a>
                     </td>
                 }
 
                 <td>
-                    <a asp-action="SaveRoute" asp-route-id="@item.Id" class="btn btn-info">Save</a> |
+                        <a asp-action="SaveRoute" asp-route-id="@item.Id" class="btn btn-secondary save-button" style="background-color: whitesmoke; color: grey;">Save</a> 
                 </td>
             </tr>
         }

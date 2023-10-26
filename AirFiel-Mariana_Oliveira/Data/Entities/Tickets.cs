@@ -48,11 +48,43 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
         public DateTime DeliveryDate { get; set; }
 
 
+        #region
+        //Passengers
+        [Display(Name = "Fly First Class")]
+        public int PassengersFirstClass { get; set; }
+
+
+        [Display(Name = "Fly Second Class")]
+        public int PassengersSecondClass { get; set; }
+
+        #endregion
+
+
+        #region 
+        //Capacities
         public int capacityReduced1 { get; set; }
 
         public int capacityReduced2 { get; set; }
 
-        public int UpdateCapacity => capacityReduced1 + capacityReduced2;
+        public int FullCapacity => capacityReduced1 + capacityReduced2;
+        #endregion
+
+        //Counts for passengers
+
+        public int FirstClassTotal => capacityReduced1 - PassengersFirstClass;
+
+        public int SecondClassTotal => capacityReduced2 - PassengersSecondClass;
+
+        public int Total => FirstClassTotal - SecondClassTotal;
+
+        public int UpdateCapacityInRoutes => FullCapacity - Total;
+
+
+
+        //Routes
+        public string Origin { get; set; }
+
+        public string Destination { get; set; }
 
         public string newUserId { get; set; }
 

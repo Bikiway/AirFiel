@@ -25,6 +25,8 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
         [Display(Name = "Destination")]
         public Cities Destination { get; set; }
 
+        public ICollection<RoutesDetails> AssociatedRoutes { get; set; }
+
 
         public IEnumerable<RoutesDetails> Items { get; set; } //Lista da RoutesDetails.
         public int Lines => Items == null ? 0 : Items.Count();

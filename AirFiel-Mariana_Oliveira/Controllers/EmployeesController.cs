@@ -135,7 +135,7 @@ namespace AirFiel_Mariana_Oliveira.Controllers
 
                         var employees = _converterHelper.ToEmployee(model, path, true);
 
-                        employees.Users = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+                        employees.Users = await _userHelper.GetUserByEmailAsync(user.UserName);
                         await _employeeRepository.CreateAsync(employees);
                         await _userHelper.AddUserToRoleAsync(employees.Users, "Employees");
 

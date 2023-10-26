@@ -41,11 +41,11 @@ namespace AirFiel_Mariana_Oliveira.Data
 
 
             var routeDetailsTemp = await _context.RoutesDetailsTemps
-                .Where(rdt => rdt.user == user && rdt.airplanes == airplanes)
-                .Where(rdt => rdt.user == user && rdt.originCities == origin)
-                .Where(rdt => rdt.user == user && rdt.destinationCities == destination)
-                .Where(rdt => rdt.user == user && rdt.pilotEmployees == pilots)
-                .Where(rdt => rdt.user == user && rdt.coPilotEmployees == coPilot)
+                .Where(rdt => rdt.airplanes == airplanes)
+                .Where(rdt => rdt.originCities == origin)
+                .Where(rdt => rdt.destinationCities == destination)
+                .Where(rdt => rdt.pilotEmployees == pilots)
+                .Where(rdt => rdt.coPilotEmployees == coPilot)
                 .FirstOrDefaultAsync();
 
             if (routeDetailsTemp == null)
@@ -61,7 +61,6 @@ namespace AirFiel_Mariana_Oliveira.Data
                     Depart = model.Depart,
                     FullPrice = model.priceId,
                     TravelsPerMonth = model.QuantityOfTravels,
-                    user = user,
                 };
                 _context.RoutesDetailsTemps.Add(routeDetailsTemp);
             }
@@ -117,9 +116,9 @@ namespace AirFiel_Mariana_Oliveira.Data
 
             var routes = new Routes
             {
-                AirplaneName = detailsInfo.FirstOrDefault()?.airplanes,
-                Depart = detailsInfo.FirstOrDefault().Depart,
-                Return = detailsInfo.FirstOrDefault().Return,
+                    AirplaneName = routeDetail.airplanes,
+                    Depart = routeDetail.Depart,
+                    Return = routeDetail.Return,
                 Destination = detailsInfo.FirstOrDefault()?.destinationCities,
                 Origin = detailsInfo.FirstOrDefault()?.originCities,
                 Pilot = detailsInfo.FirstOrDefault()?.pilotEmployees,

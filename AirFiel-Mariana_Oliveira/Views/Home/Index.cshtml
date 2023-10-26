@@ -2,7 +2,337 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+<style>
+
+    .logo{
+        position:absolute;
+        display:none;
+        align-content:inherit;
+        margin-left: 1px;
+        margin-right: 100px;
+        margin-top: 1px;
+        margin-bottom: 200px;
+    }
+
+    h1{
+        text-align: left;
+        color: darkcyan;
+        font-size: 50px;
+        border-block-end: solid;
+        border-block-end-color: lightblue;
+    }
+
+    h2{
+        text-align: center;
+        color:brown;
+        font-size: 20px;
+    }
+
+
+    .backImage{
+        width: 80%;
+        height: 100px;
+    }
+
+    .welcome-image {    
+        background-color: whitesmoke;
+        border-block-end: 2px solid;
+        border-block-end-color: bisque;
+    }
+
+    
+
+ /*Slideshow container */
+.slideshow-container {
+  max-width: 500px;
+  position: center;
+  margin-top: 150px;
+  margin-bottom: 90px;
+  margin-left: 60px;
+}
+
+/* Hide the images by default */
+.mySlides {
+  display: none;
+  position: center;
+  margin-left: 60px;
+  transition: 2s ease;
+}
+
+.mySlides img{
+    width: 170%;
+    height: 170%;
+    position: center;
+    margin-left: 60px;
+    transition: 2s ease;
+}
+
+/* Next & previous buttons */
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 46%;
+  width: 110px;
+  margin-top: 46px;
+  padding: 5px;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  border-radius: 1px 0.5px 0.5px 0;
+  user-select: none;
+}
+
+/* Position the "next button" to the right */
+.next {
+  right: 60px;
+  border-radius: 0.5px 1px 0 0.5px;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover, .next:hover {
+  background-color: rgba(0,0,0,0.8);
+}
+
+.dot-container {
+   text-align: center;
+   padding: 20px;
+   margin: 50px 5px 50px 350px;
+ }
+
+/* The dots/bullets/indicators */
+.dot {
+  cursor: pointer;
+  height: 5px;
+  width: 5px;
+  margin: 0 2px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+}
+
+.active, .dot:hover {
+  background-color: #717171;
+}
+
+.outtour{
+    display: inline-block;
+    margin-top: 120px;
+    margin-bottom: 20px;
+}
+
+</style>
+
+
+<h1>
+<img src="~/images/flags/logotipo.png" id="logo" />
+Welcome to Airfiel
+</h1>
+<h2>We fly within Europe</h2>
+
+<img src="~/images/cities/imagem8.jpg" id="backImage" />
+
+<section class="welcome-image">
+    <div class="display-table">
+        <div class="display-table-cell5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="header-text text-center">
+                            <!-- slide-detail start here -->
+                            <div class="slide-detail col-md-6">
+                                <form asp-controller="Routes" asp-action="Search" class="form-horizontal">
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <h3 class="rubike">Search Tour</h3>
+                                            <label>Find your dream tour today!</label>
+
+                                            <div class="text-success">
+                                                <p>
+                                                    @ViewData["MessageHome"]
+                                                </p>
+                                            </div>
+                                            <div class="form-icons">
+                                                <select asp-for="FromCountryCityId" asp-items="Model?.From" class="form-control" i>
+                                                </select><i class="fa fa-plane"></i>
+                                            </div>
+                                            <div class="form-icons">
+                                                <select asp-for="ToCountryCityId" asp-items="Model?.To" class="form-control">
+                                                </select> <i class="fa fa-plane"></i>
+                                            </div>
+                                            <div class="form-icons">
+                                                <input asp-for="FlightDate" class="form-control" value="" placeholder="Date" type="date">
+
+                                            </div>
+                                            <button type="submit" value="Search" class="btn-primary" style="background-color: whitesmoke; color:darkcyan; font-size:16px;">                                              
+                                                <i class="fa fa-plane-departure" style="color: peru"></i> Search
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- slide-detail end here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="slideshow-container">
+    <div class="mySlides">
+        <img src="~/images/planes/EmbraerJet.jpeg" alt="Slide 1" />
+    </div>
+
+    <div class="mySlides">
+        <img src="~/images/cities/imagem2.jpeg" alt="Slide 2">
+    </div>
+
+    <div class="mySlides">
+        <img src="~/images/cities/imagem3.jpeg" alt="Slide 3" />
+    </div>
+
+    <div class="mySlides">
+        <img src="~/images/cities/imagem7.jpeg" alt="Slide 4" />
+    </div>
+
+    <a class="prev" onclick="plusSlides(-1)">&#10094</a>
+    <a class="next" onclick="plusSlides(1)">&#10095</a>
 </div>
+
+<br>
+
+<div class="dot-container">
+    <span class="dot" onclick="currentSlide(1)"></span>
+    <span class="dot" onclick="currentSlide(2)"></span>
+    <span class="dot" onclick="currentSlide(3)"></span>
+    <span class="dot" onclick="currentSlide(4)"></span>
+</div>
+
+
+
+<section id="outtour" class="about-us-area section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="section-title text-center">
+                    <h2>The most awarded company</h2>
+                    <div class="title-separator-outer ">
+                        <div class="title-separator bg-primary style-liner"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-component greyBg" data-control="Shared/Row" style="overflow:hidden !important;">
+        <div class="container">
+            <div class="row lineContinue">
+                <div class="col-md-6 col-sm-6 text-left content-banner-lite delay-1 appear" data-control="UI002_Content_Banner_lite">
+                    <div class="contentBanner contentBanner-left">
+                        <div class="contentBanner_image">
+                            <img class="min_img" src="~/images/cities/imagem5.jpeg" alt="image" />
+                            <div class="overlay-box">
+                                <a href="~/images/cities/imagem5.jpeg" class="venobox" data-gall="myGallery"><span class="icon fa fa-link Default-clr"></span></a>
+                            </div>
+                        </div>
+
+                        <div class="contentBanner_content bg_white">
+                            <div>
+                                <h3 class="Default-clr-hvr">
+                                    Serbia
+                                </h3>
+                            </div>
+                            <div class="shortDescription_container">
+                                Awaken your senses, explore a beautiful history, vibrant colors...
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 text-left content-banner-lite delay-0 appear" data-control="UI002_Content_Banner_lite">
+                    <div class="contentBanner contentBanner-right">
+                        <div class="contentBanner_image">
+                            <img class="min_img" src="~/images/cities/imagem2.jpeg" alt="image" />
+                            <div class="overlay-box">
+                                <a href="~/images/cities/imagem2.jpeg" class="venobox" data-gall="myGallery"><span class="icon fa fa-link Default-clr"></span></a>
+                            </div>
+                        </div>
+                        <div class="contentBanner_content bg_white">
+                            <div>
+                                <h3 class="Default-clr-hvr">
+                                    Netherland
+                                </h3>
+                            </div>
+                            <div class="shortDescription_container">
+                                Be dazzled by shining pagodas, traditional cityscapes, age-old heritage and new technology… Explore and appreciate the many facets of Netherland.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="seperator"></div>
+            </div>
+            <div class="row lineContinue">
+                <div class="col-md-6 col-sm-6 text-left content-banner-lite delay-1 appear" data-control="UI002_Content_Banner_lite">
+                    <div class="contentBanner contentBanner-left">
+                        <div class="contentBanner_image">
+                            <img class="min_img" src="~/images/cities/imagem7.jpeg" alt="image" />
+                            <div class="overlay-box">
+                                <a href="/images/cities/imagem7.jpeg" class="venobox" data-gall="myGallery"><span class="icon fa fa-link Default-clr"></span></a>
+                            </div>
+                        </div>
+                        <div class="contentBanner_content bg_white">
+                            <div>
+                                <h3 class="Default-clr-hvr">
+                                    Italy
+                                </h3>
+                            </div>
+                            <div class="shortDescription_container">
+                                Discover natural wonders, pristine beaches and amazing food...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 text-left content-banner-lite delay-0 appear" data-control="UI002_Content_Banner_lite">
+                    <div class="contentBanner contentBanner-right">
+                        <div class="contentBanner_image">
+                            <img alt="image" src="~/images/home/trip4.jpg" class="min_img" />
+                            <div class="overlay-box">
+                                <a href="assets/images/trip4.jpg" class="venobox" data-gall="myGallery"><span class="icon fa fa-link Default-clr"></span></a>
+                            </div>
+                        </div>
+                        <div class="contentBanner_content bg_white">
+                            <div>
+                                <h3 class="Default-clr-hvr">
+                                    Skydive with us
+                                </h3>
+                            </div>
+                            <div class="shortDescription_container">
+                                We are glad to have a partnership with GearArms and provide an amazing experience for all adventurous out there!
+                            </div>
+                        </div>
+    </div>
+    </div>
+                <div class="seperator"></div>
+    </div>
+    </div>
+</div>
+</section>
+<br />
+<br />
+<br />
+
+
+<script>
+    $(document).ready(function () {
+        $('#carouselExampleIndicators').carousel(); // Initialize the carousel
+
+        // Automatically advance the carousel every 3 seconds
+        $('#carouselExampleIndicators').carousel({
+            interval: 3000
+        });
+    });
+</script>
+
