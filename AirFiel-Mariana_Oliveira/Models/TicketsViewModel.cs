@@ -2,11 +2,13 @@
 using System.Xml.Linq;
 using System;
 using AirFiel_Mariana_Oliveira.Data.Entities;
+using System.Collections.Generic;
 
 namespace AirFiel_Mariana_Oliveira.Models
 {
     public class TicketsViewModel
     {
+        public int Id { get; set; }
         public int routesId { get; set; }
 
         public int PricePerTicketId { get; set; }
@@ -44,8 +46,32 @@ namespace AirFiel_Mariana_Oliveira.Models
         public int Passengers { get; set; }
 
 
+        [Display(Name = "Fly First Class")]
+        public int PassengersFirstClass { get; set; }
+
+
+        [Display(Name = "Fly Second Class")]
+        public int PassengersSecondClass { get; set; }
+
+
         [Display(Name = "Ida e Volta")]
         public bool IdaEVolta { get; set; }
+
+
+        public IEnumerable<TicketsDetailsTemp> Items { get; set; }
+
+
+        public int SeatNumber1 { get; set; }
+
+        public int SeatNumber2 { get; set; }
+
+        public int NumberOfSeats1 { get; set; }
+
+        public int NumberOfSeats2 { get; set; }
+
+        public int SeatId1 { get; set; }
+
+        public int SeatId2 { get;set; }
 
     }
 }

@@ -20,7 +20,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="CountryName">Country</label>
-                <select asp-for="CountryName" class="form-control" />
+                <input asp-for="CountryName" class="form-control" />
                 <span asp-validation-for="CountryName" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -39,14 +39,20 @@
                 <span asp-validation-for="Airport" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <button type="submit" value="Save" class="btn btn-primary" style="background-color: wheat">
+                    <i class="fa fa-city" style="color: olive"></i> Edit
+                </button>
             </div>
         </form>
     </div>
 </div>
 
+<div class="col-md-4">
+    <img src="@Url.Content(Model.Flags)" alt="Image" style="width:400px; height:350px; margin-left: 450px; margin-top: -410px;">
+</div>
+
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" style="font-size: 20px; color:darkgoldenrod;">Back to List</a>
 </div>
 
 @section Scripts {

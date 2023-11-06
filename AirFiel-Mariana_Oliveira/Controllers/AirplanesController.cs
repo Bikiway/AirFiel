@@ -10,6 +10,7 @@ using AirFiel_Mariana_Oliveira.Data.Entities;
 using AirFiel_Mariana_Oliveira.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using AirFiel_Mariana_Oliveira.Models;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace AirFiel_Mariana_Oliveira.Controllers
 {
@@ -72,9 +73,9 @@ namespace AirFiel_Mariana_Oliveira.Controllers
             {
                 var imageId = string.Empty;
 
-                if(model.ImageFile != null && model.ImageFile.Length > 0)
+                if(model.ImagePlane != null && model.ImagePlane.Length > 0)
                 {
-                    imageId = await _imageHelper.UploadImageAsync(model.ImageFile, "planes");
+                    imageId = await _imageHelper.LoadImagesAsync(model.ImagePlane, "planes");
                 }
 
                 var airplanes = _converterHelper.ToPlanes(model, imageId, true);
@@ -122,9 +123,9 @@ namespace AirFiel_Mariana_Oliveira.Controllers
                 {
                     var path = model.ImagePlane;
 
-                    if(model.ImageFile != null && model.ImageFile.Length > 0)
+                    if(model.ImagePlane != null && model.ImagePlane.Length > 0)
                     {
-                        path = await _imageHelper.UploadImageAsync(model.ImageFile, "planes");
+                        path = await _imageHelper.LoadImagesAsync(model.ImagePlane, "planes");
                     }
 
                     var plane = _converterHelper.ToPlanes(model, path, false);

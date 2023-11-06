@@ -13,6 +13,7 @@ using AirFiel_Mariana_Oliveira.Models;
 using System.Net.Http;
 using System.Collections.ObjectModel;
 using Newtonsoft.Json;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace AirFiel_Mariana_Oliveira.Controllers
 {
@@ -72,14 +73,14 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         {
             if (ModelState.IsValid)
             {
-                var path = model.CountryName;
+                var imageId = string.Empty;
 
-                if (model.FlagsFile != null && model.FlagsFile.Length > 0)
+                if (model.Flags != null && model.Flags.Length > 0)
                 {
-                    path = await _imageHelper.UploadImageAsync(model.FlagsFile, "flags");
+                    imageId = await _imageHelper.LoadImagesAsync(model.Flags, "flags"); 
                 }
 
-                var citys = _converterHelper.ToCities(model, path, true);
+                var citys = _converterHelper.ToCities(model, imageId, true);
 
                 citys.Users = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                 await _cityRepository.CreateAsync(citys);
@@ -120,11 +121,11 @@ namespace AirFiel_Mariana_Oliveira.Controllers
             {
                 try
                 {
-                    var path = model.CountryName;
+                    var path = model.Flags;
 
-                    if (model.FlagsFile != null && model.FlagsFile.Length > 0)
+                    if (model.Flags != null && model.Flags.Length > 0)
                     {
-                        path = await _imageHelper.UploadImageAsync(model.FlagsFile, "flags");
+                        path = await _imageHelper.LoadImagesAsync(model.Flags, "flags");
                     }
 
                     var cities = _converterHelper.ToCities(model, path, false);

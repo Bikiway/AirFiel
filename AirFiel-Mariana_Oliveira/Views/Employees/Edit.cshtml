@@ -1,4 +1,4 @@
-﻿@model AirFiel_Mariana_Oliveira.Data.Entities.Employees
+﻿@model AirFiel_Mariana_Oliveira.Models.EmployeeViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -10,9 +10,10 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data" >
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ProfileImage" />
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
                 <input asp-for="FirstName" class="form-control" />
@@ -34,19 +35,25 @@
                 <span asp-validation-for="Experience" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ProfileImage" class="control-label"></label>
-                <input asp-for="ProfileImage" class="form-control" />
-                <span asp-validation-for="ProfileImage" class="text-danger"></span>
+                <label asp-for="ImageProfile" class="control-label"></label>
+                <input asp-for="ImageProfile" class="form-control" type="file" />
+                <span asp-validation-for="ImageProfile" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <button type="submit" value="Save" class="btn btn-primary" style="background-color: wheat">
+                    <i class="fa fa-globe-europe" style="color: olivedrab"></i> Edit
+                </button>
             </div>
         </form>
     </div>
 </div>
 
+<div class="col-md-4">
+    <img src="@Url.Content(Model.ProfileImageFullPath)" alt="Image" style="width:400px; height:350px; margin-left: 450px; margin-top: -410px;">
+</div>
+
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" style="font-size: 20px; color:darkgoldenrod;">Back to List</a>
 </div>
 
 @section Scripts {

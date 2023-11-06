@@ -44,11 +44,24 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
         public bool IdaEVolta { get; set; }
 
 
+        [Display(Name = "Fly First Class")]
+        public int? PassengersFirstClass { get; set; }
+
+
+        [Display(Name = "Fly Second Class")]
+        public int? PassengersSecondClass { get; set; }
+
+        public int? SeatNumber1Class { get; set; }
+
+        public int? SeatsNumber2Class { get; set; }
+
+
         [DisplayFormat(DataFormatString = "{0:C2}")]
         public double PricePerTicket { get; set; }
 
         public double TravelPrice => PricePerTicket * (double)Passengers;
 
+        public int routeId { get; set; }
 
         public Routes routesId { get; set; }
 

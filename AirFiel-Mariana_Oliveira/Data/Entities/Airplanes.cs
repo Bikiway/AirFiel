@@ -14,19 +14,23 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
 
 
         [Display(Name = "Total of Classes")]
-        [MaxLength(1, ErrorMessage = "The field {0} only can contain {1} characters lenght.")]
-        [DisplayFormat(DataFormatString = "{0:N0}", ApplyFormatInEditMode = false)]
+        [Range(1 ,2, ErrorMessage ="The number of classes must be between 1 and 2")]
         public int HowManyClasses { get; set; }
+
 
         [Display(Name = "First Class Capacity")]
         public int Capacity1 { get; set; }
 
+
         [Display(Name = "Second Class Capacity")]
         public int Capacity2 { get; set; }
 
+
         public int Fullcapacity => Capacity1 + Capacity2;
 
+
         public string NamePlusCapacity => $"{Name} + {Fullcapacity}";
+
 
         [Display(Name = "Airplane Image")]
         public string ImagePlane { get; set; }

@@ -33,7 +33,6 @@ namespace AirFiel_Mariana_Oliveira.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("HowManyClasses")
-                        .HasMaxLength(1)
                         .HasColumnType("int");
 
                     b.Property<string>("ImagePlane")
@@ -151,8 +150,8 @@ namespace AirFiel_Mariana_Oliveira.Migrations
                     b.Property<int?>("DestinationId")
                         .HasColumnType("int");
 
-                    b.Property<double>("Discounts")
-                        .HasColumnType("float");
+                    b.Property<int>("FromCountryCityID")
+                        .HasColumnType("int");
 
                     b.Property<double>("GetFullPrice")
                         .HasColumnType("float");
@@ -165,6 +164,9 @@ namespace AirFiel_Mariana_Oliveira.Migrations
 
                     b.Property<DateTime>("Return")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("ToCountryCityId")
+                        .HasColumnType("int");
 
                     b.Property<string>("usersId")
                         .HasColumnType("nvarchar(450)");
@@ -301,6 +303,9 @@ namespace AirFiel_Mariana_Oliveira.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("CC")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ClientFirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -311,6 +316,33 @@ namespace AirFiel_Mariana_Oliveira.Migrations
 
                     b.Property<DateTime>("DeliveryDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Depart")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Destination")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NIF")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Origin")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PassengersFirstClass")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PassengersSecondClass")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Return")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("SeatNumber1Class")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SeatsNumber2Class")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -345,18 +377,39 @@ namespace AirFiel_Mariana_Oliveira.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("CC")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IdaEVolta")
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("NIF")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PassengersFirstClass")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PassengersSecondClass")
+                        .HasColumnType("int");
+
                     b.Property<double>("PricePerTicket")
                         .HasColumnType("float");
 
                     b.Property<int>("QuantityOfPassengers")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SeatNumber1Class")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SeatsNumber2Class")
                         .HasColumnType("int");
 
                     b.Property<int?>("TicketsId")
@@ -413,12 +466,27 @@ namespace AirFiel_Mariana_Oliveira.Migrations
                     b.Property<int>("Passengers")
                         .HasColumnType("int");
 
+                    b.Property<int?>("PassengersFirstClass")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PassengersSecondClass")
+                        .HasColumnType("int");
+
                     b.Property<double>("PricePerTicket")
                         .HasColumnType("float");
+
+                    b.Property<int?>("SeatNumber1Class")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SeatsNumber2Class")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("routeId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("routesIdId")
                         .HasColumnType("int");

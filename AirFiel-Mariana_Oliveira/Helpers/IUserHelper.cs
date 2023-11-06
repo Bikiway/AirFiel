@@ -7,7 +7,7 @@ namespace AirFiel_Mariana_Oliveira.Helpers
 {
     public interface IUserHelper
     {
-        Task<IdentityResult> AnonymousPersonAsync(Users user, string password);
+        Task<Users> GetUserByUserNameAsync(string userName);
 
         Task<Users> GetUserByEmailAsync(string email);
 

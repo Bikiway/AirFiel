@@ -45,5 +45,17 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
         public string ProfileImage { get; set; }
 
         public Users Users { get; set; }
+
+        public string ProfileImageFullPath
+        {
+            get
+            {
+                if(string.IsNullOrEmpty(ProfileImage))
+                { return null; }
+
+                return $"https://localhost:44383{ProfileImage.Substring(1)}";
+            }
+
+        }
     }
 }

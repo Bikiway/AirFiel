@@ -1,4 +1,8 @@
-﻿@model IEnumerable<AirFiel_Mariana_Oliveira.Data.Entities.Routes>
+﻿@model AirFiel_Mariana_Oliveira.Models.FlightListAndSearchViewModel
+@using AirFiel_Mariana_Oliveira.Data.Entities;
+@using AirFiel_Mariana_Oliveira.Models;
+@inject IEnumerable<Tickets> Ticket;
+
 @{
     ViewData["Title"] = "Index";
 }
@@ -11,103 +15,108 @@
 </p>   
 }
 
+<partial name="_FlightSearchPartialView" />
+
 <table class="table">
     <thead>
         <tr>
            @if (this.User.IsInRole("Admin") || (this.User.IsInRole("Employees")))
             {
                 <th>
-                    @Html.DisplayNameFor(model => model.users.FullName)
+                    FullName
                 </th>
 
                 <th>
-                    @Html.DisplayNameFor(model => model.FullPrice)
+                   FullPrice
                 </th>
 
+                <th>
+                   FullCapacity
+                </th>
+                <th>
+                   Airplane
+                 </th>
+                <th>
+                   Lines
+                </th>
+
+                <th>
+                  Pilot
+                 </th>
+
+                <th>
+                  Co-Pilot
+                </th>
+
+                <th>
+                  Travels p/ Month
+                </th>
+            }
+
             <th>
-                @Html.DisplayNameFor(model => model.FullCapacity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AirplaneName)
-            </th>
-            <th>
-                    @Html.DisplayNameFor(model => model.Lines)
+                Destination
             </th>
 
             <th>
-                   @Html.DisplayNameFor(model => model.Pilot)
-            </th>
-               
-            <th>
-                  @Html.DisplayNameFor(model => model.CoPilot)
+                Origin
             </th>
 
             <th>
-                   @Html.DisplayNameFor(model => model.TravelsPerMonth)
+                Depart
             </th>
 
             <th>
-                @Html.DisplayNameFor(model => model.Destination)
+                Return
             </th>  
             
             <th>
-                @Html.DisplayNameFor(model => model.Origin)
-            </th>
-
-            <th>
-                @Html.DisplayNameFor(model => model.Depart)
-            </th>
-
-            <th>
-                @Html.DisplayNameFor(model => model.Return)
-            </th>
-
-            <th>
-                @Html.DisplayNameFor(model => model.PricePerTicket)
+                Price p/ ticket
             </th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.FlightsList)
         {
             <tr>
                @if (this.User.IsInRole("Admin") || (this.User.IsInRole("Employees")))
                 {
                     <td>
-                        @Html.DisplayFor(modelItem => item.users.FullName)
+                        @Html.DisplayFor(modelItem => item.users.UserName)
                     </td>
 
                     <td>
                         @Html.DisplayFor(modelItem => item.FullPrice)
                     </td>
 
-                <td>
-                    @Html.DisplayFor(modelItem => item.FullCapacity)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AirplaneName.Name)
-                </td>
-                <td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FullCapacity)
+                    </td>
+                    <td>
+                       @Html.DisplayFor(modelItem => item.AirplaneName.NamePlusCapacity)
+                    </td>
+                    <td>
                        @Html.DisplayFor(modelItem => item.Lines)
-                </td>
-                <td>
-                       @Html.DisplayFor(modelItem => item.Pilot.FirstName)
-                </td>
+                    </td>
+                    <td>
+                       @Html.DisplayFor(modelItem => item.Pilot.NameAndExperience)
+                    </td>
 
-                <td>
-                       @Html.DisplayFor(modelItem => item.CoPilot.FirstName)
-                </td>
+                    <td>
+                       @Html.DisplayFor(modelItem => item.CoPilot.NameAndExperience)
+                    </td>
 
-                <td>
+                     <td>
                        @Html.DisplayFor(modelItem => item.TravelsPerMonth)
+                     </td>
+                }
+               
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Destination.FullAirportAndCityName)
                 </td>
 
                 <td>
-                    @Html.DisplayFor(modelItem => item.Destination.Name)
-                </td>
-
-                <td>
-                    @Html.DisplayFor(modelItem => item.Origin.Name)
+                    @Html.DisplayFor(modelItem => item.Origin.FullAirportAndCityName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Depart)
@@ -120,19 +129,73 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.PricePerTicket)
                 </td>
+                
+                
+                
+                @if (this.User.IsInRole("Customer") || item.users == null)
+                {
+                   <td>
+              
+               
+                    @if(item.Depart < DateTime.Now)
+                    {
+                       <a href="#" class="btn btn-warning">Close</a>
+                    }
 
-                @if (this.User.IsInRole("Customer"))
+                        else if(item.FullCapacity == Ticket.FirstOrDefault()?.QuantityOfPassengers)
+                        {
+                            <a href="#" class="btn btn-danger">Fully Booked</a>
+                        }
+                        else
+                        {
+                             <input type="hidden" asp-for="@item.Id">
+                             <a asp-controller="Tickets" asp-action="AddTicket" asp-route-id="@item.Id" class="btn btn-primary buy-button" style="background-color: whitesmoke; color: grey;">Buy</a>
+                   
+                        }
+                 
+                
+                   </td>
+              }
+                @if (this.User.IsInRole("Employees"))
                 {
                     <td>
-                        <a asp-controller="Tickets" asp-action="Create" asp-route-id="@item.Id" class="btn btn-primary buy-button" style="background-color: whitesmoke; color: grey;">Buy</a>
+                        <a asp-action="SaveRoute" asp-route-id="@item.Id" class="btn btn-secondary save-button" style="background-color: whitesmoke; color: grey;">Save</a> 
                     </td>
                 }
-
-                <td>
-                        <a asp-action="SaveRoute" asp-route-id="@item.Id" class="btn btn-secondary save-button" style="background-color: whitesmoke; color: grey;">Save</a> 
-                </td>
+                
+              
             </tr>
         }
     </tbody>
 </table>
 
+<script>
+
+    var saveButton = document.querySelectorAll(".save-button");
+    var buyButton = document.querySelectorAll(".buy-button");
+   
+    function changeColor(element, color) {
+        element.style.backgroundColor = color;
+    }
+
+    editButton.forEach(function (element) {
+        element.addEventListener("mouseover", function () {
+            changeColor(element, "lightblue");
+        });
+
+        element.addEventListener("mouseout", function () {
+            changeColor(element, "whitesmoke");
+        });
+    });
+
+    editButton.forEach(function (element) {
+        element.addEventListener("mouseover", function () {
+            changeColor(element, "lightblue");
+        });
+
+        element.addEventListener("mouseout", function () {
+            changeColor(element, "whitesmoke");
+        });
+    });
+    
+</script>

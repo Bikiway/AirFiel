@@ -1,6 +1,87 @@
 ﻿@{
     ViewData["Title"] = "Privacy Policy";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+
+    <style>
+        .contact-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .contact-header {
+            text-align: center;
+            font-size: 24px;
+            color: #333;
+            border-bottom: 2px solid #ccc;
+            margin-bottom: 20px;
+        }
+
+        .contact-section {
+            margin-bottom: 20px;
+        }
+
+            .contact-section h3 {
+                font-size: 18px;
+                color: #555;
+            }
+
+            .contact-section p {
+                font-size: 16px;
+                color: #333;
+            }
+
+        .contact-icons {
+            font-size: 24px;
+            color: #007bff;
+        }
+
+        .social-icons {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+            .social-icons a {
+                margin: 0 10px;
+                font-size: 24px;
+                color: #007bff;
+                text-decoration: none;
+            }
+
+                .social-icons a:hover {
+                    color: #0056b3;
+                }
+    </style>
+
+    <div class="contact-container">
+        <div class="contact-header">Contact Us</div>
+
+        <div class="contact-section">
+            <h3>Contact Center</h3>
+            <p><i class="contact-icons fas fa-mobile"></i> Phone: 123-456-789</p>
+        </div>
+
+        <div class="contact-section">
+            <h3>Email</h3>
+            <p><i class="contact-icons fa fa-envelope"></i> Email: airfiel.contacts@airfiel.com</p>
+        </div>
+
+        <div class="contact-section">
+            <h3>Follow Us</h3>
+            <div class="social-icons">
+                <a href="#" class="fab fa-facebook-square"></a>
+                <a href="#" class="fab fa-instagram"></a>
+                <a href="#" class="fab fa-twitter-square"></a>
+            </div>
+        </div>
+    </div>
+
+
+
+

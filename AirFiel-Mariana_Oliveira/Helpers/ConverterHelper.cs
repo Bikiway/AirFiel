@@ -46,7 +46,8 @@ namespace AirFiel_Mariana_Oliveira.Helpers
                 ProfileImage = imageId,
                 Age = model.Age,
                 Experience = model.Experience,
-                Email = model.Email,
+                Email = model.UserName,
+                UserName = model.UserName,
                 Users = model.Users,
             };
         }
@@ -63,6 +64,7 @@ namespace AirFiel_Mariana_Oliveira.Helpers
                 Age = employees.Age,
                 Experience = employees.Experience,
                 Email= employees.Email,
+                UserName = employees.UserName,
                 Users = employees.Users,
             };
         }

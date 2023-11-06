@@ -1,8 +1,10 @@
 ﻿using AirFiel_Mariana_Oliveira.Data.Entities;
 using AirFiel_Mariana_Oliveira.Helpers;
 using AirFiel_Mariana_Oliveira.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -90,7 +92,6 @@ namespace AirFiel_Mariana_Oliveira.Data
                 .Include(p => p.destinationCities)
                 .Include(p => p.pilotEmployees)
                 .Include(p => p.coPilotEmployees)
-                .Where(p => p.user == user)
                 .ToListAsync();
 
             if (routeTemps == null || routeTemps.Count == 0)
@@ -114,27 +115,32 @@ namespace AirFiel_Mariana_Oliveira.Data
             int airplaneId = routeTemps.FirstOrDefault()?.airplanes.Id ?? 0;
             var capacities = GetCapacitiesFromAirplanes(airplaneId);
 
-            var routes = new Routes
+            var routes = detailsInfo.Select(routeTemp =>
             {
-                    AirplaneName = routeDetail.airplanes,
-                    Depart = routeDetail.Depart,
-                    Return = routeDetail.Return,
-                Destination = detailsInfo.FirstOrDefault()?.destinationCities,
-                Origin = detailsInfo.FirstOrDefault()?.originCities,
-                Pilot = detailsInfo.FirstOrDefault()?.pilotEmployees,
-                CoPilot = detailsInfo.FirstOrDefault()?.coPilotEmployees,
-                GetFullPrice = detailsInfo.FirstOrDefault().FullPrice,
-                Capacity1 = (await capacities)[0],
-                Capacity2 = (await capacities)[1],
-                users = user,
-                Items = detailsInfo,
-            };
+                return new RoutesViewModel
+                {
+                    AirplaneName = routeTemp.airplanes,
+                    Depart = routeTemp.Depart,
+                    Return = routeTemp.Return,
+                    Destination = routeTemp.destinationCities,
+                    Origin = routeTemp.originCities,
+                    Pilot = routeTemp.pilotEmployees,
+                    CoPilot = routeTemp.coPilotEmployees,
+                    GetFullPrice = routeTemp.FullPrice,
+                    Capacity1 = capacities.Id,
+                    Capacity2 = capacities.Id,
+                    users = user,
+                    Items = detailsInfo,
+                    FromCountryCityID = routeTemp.originCities.Id,
+                    ToCountryCityId = routeTemp.destinationCities.Id,
+                };
+            }).ToList();
 
-            await CreateAsync(routes);
+            await CreateAsyncList(routes);
             _context.RoutesDetailsTemps.RemoveRange(routeTemps);
             await _context.SaveChangesAsync();
             return true;
-        }
+        }      
 
         public async Task DeleteTempAsync(int Id)
         {
@@ -148,7 +154,7 @@ namespace AirFiel_Mariana_Oliveira.Data
             _context.RoutesDetailsTemps.Remove(routeDetailsTemp);
             await _context.SaveChangesAsync();
         }
-    
+
 
         public async Task<IQueryable<RoutesDetailsTemp>> GetDetailsTempsAsync(string userName)
         {
@@ -164,13 +170,14 @@ namespace AirFiel_Mariana_Oliveira.Data
                 .Include(o => o.destinationCities)
                 .Include(o => o.pilotEmployees)
                 .Include(o => o.coPilotEmployees)
-                .Where(o => o.user == user)
                 .OrderBy(o => o.destinationCities.Name);
         }
 
-        public async Task<IQueryable<Routes>> GetRoutesAsync(string userName)
+        public async Task<IQueryable<Routes>> GetRoutesAsync()
         {
-            var user = await _userHelper.GetUserByEmailAsync(userName);
+            string email = string.Empty;
+            var user = await _userHelper.GetUserByEmailAsync(email);
+
             if (user == null)
             {
                 return _context.Route
@@ -184,29 +191,30 @@ namespace AirFiel_Mariana_Oliveira.Data
                     .ThenInclude(o => o.coPilotEmployees)
                     .Include(o => o.Items)
                     .ThenInclude(o => o.airplanes)
-                    .Where(o => o.users == user)
-                    .OrderByDescending(o => o.AirplaneName); 
+                    .OrderByDescending(o => o.AirplaneName);
             }
 
-                if (await _userHelper.IsUserInRoleAsync(user, "Admin"))
-                {
-                    return _context.Route
-                        .Include(o => o.users)
-                        .Include(o => o.Items)
-                        .ThenInclude(o => o.originCities)
-                        .Include(o => o.Items)
-                        .ThenInclude(o => o.destinationCities)
-                        .Include(o => o.Items)
-                        .ThenInclude(o => o.pilotEmployees)
-                        .Include(o => o.Items)
-                        .ThenInclude(o => o.coPilotEmployees)
-                        .Include(o => o.Items)
-                        .ThenInclude(o => o.originCities)
-                        .Include(o => o.Items)
-                        .ThenInclude(o => o.airplanes)
-                        .OrderByDescending(o => o.AirplaneName);
-                }
+            if (await _userHelper.IsUserInRoleAsync(user, "Admin"))
+            {
+                return _context.Route
+                    .Include(o => o.users)
+                    .Include(o => o.Items)
+                    .ThenInclude(o => o.originCities)
+                    .Include(o => o.Items)
+                    .ThenInclude(o => o.destinationCities)
+                    .Include(o => o.Items)
+                    .ThenInclude(o => o.pilotEmployees)
+                    .Include(o => o.Items)
+                    .ThenInclude(o => o.coPilotEmployees)
+                    .Include(o => o.Items)
+                    .ThenInclude(o => o.originCities)
+                    .Include(o => o.Items)
+                    .ThenInclude(o => o.airplanes)
+                    .OrderByDescending(o => o.AirplaneName);
+            }
 
+            else
+            {
                 return _context.Route
                     .Include(o => o.Items)
                     .ThenInclude(o => o.originCities)
@@ -218,9 +226,8 @@ namespace AirFiel_Mariana_Oliveira.Data
                     .ThenInclude(o => o.coPilotEmployees)
                     .Include(o => o.Items)
                     .ThenInclude(o => o.airplanes)
-                    .Where(o => o.users == user)
                     .OrderByDescending(o => o.AirplaneName);
-            
+            }
         }
 
         public async Task<Routes> GetRoutesAsync(int id)
@@ -232,14 +239,14 @@ namespace AirFiel_Mariana_Oliveira.Data
         {
             var routesDetailsTemp = await _context.RoutesDetailsTemps.FindAsync(Id);
 
-            if (routesDetailsTemp == null) 
+            if (routesDetailsTemp == null)
             {
                 return;
             }
 
             routesDetailsTemp.TravelsPerMonth += quantityPerMonth;
 
-            if(routesDetailsTemp.TravelsPerMonth > 0)
+            if (routesDetailsTemp.TravelsPerMonth > 0)
             {
                 _context.RoutesDetailsTemps.Update(routesDetailsTemp);
                 await _context.SaveChangesAsync();
@@ -250,7 +257,7 @@ namespace AirFiel_Mariana_Oliveira.Data
         {
             var route = await _context.Route.FindAsync(model.Id);
 
-            if(route == null)
+            if (route == null)
             {
                 return;
             }
@@ -271,6 +278,60 @@ namespace AirFiel_Mariana_Oliveira.Data
             }
 
             return new int[] { 0, 0 };
+        }
+
+        public IQueryable GetAllWithUsers() //Query com join. Tipo inner join
+        {
+            return _context.Route.Include(p => p.users);
+        }
+
+        public async Task<string> GetCityNameById(int cityId)
+        {
+            var city = await _context.Route
+                .Where(c => c.Id == cityId)
+                .Select(c => c.Origin.FullCityName)
+                .FirstOrDefaultAsync();
+
+            return city;
+        }
+
+
+        public IEnumerable<SelectListItem> Origins()
+        {
+
+            var list = _context.Route.Select(p => new SelectListItem
+            {
+                Text = p.Origin.FullCityName,
+                Value = p.Id.ToString(),
+            }).ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "(Select)",
+                Value = "0",
+            });
+
+            return list;
+
+        }
+
+        public IEnumerable<SelectListItem> Destinations()
+        {
+
+            var list = _context.Route.Select(p => new SelectListItem
+            {
+                Text = p.Destination.FullCityName,
+                Value = p.Id.ToString(),
+            }).ToList();
+
+            list.Insert(0, new SelectListItem
+            {
+                Text = "(Select)",
+                Value = "0",
+            });
+
+            return list;
+
         }
 
         #endregion

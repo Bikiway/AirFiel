@@ -26,7 +26,7 @@
             </th>
 
             <th>
-                @Html.DisplayNameFor(model => model.UpdateCapacity)
+                @Html.DisplayNameFor(model => model.UpdateCapacityInRoutes)
             </th>
 
         </tr>
@@ -48,12 +48,12 @@
                     @Html.DisplayFor(modelItem => item.TotalPrice)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.UpdateCapacity)
+                    @Html.DisplayFor(modelItem => item.UpdateCapacityInRoutes)
                 </td>
 
                 <td>
-                    <a asp-action="AddTicket" asp-route-id="@item.Id" class="btn btn-info">AddTicket</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a> |
+                    <a asp-action="AddTicket" asp-route-id="@item.Id" class="btn btn-secondary add-button" style="background-color: whitesmoke; color: grey;">Add Ticket</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-secondary delete-button" style="background-color: whitesmoke; color: grey;">Delete</a> |
 
                 </td>
             </tr>
@@ -62,3 +62,33 @@
 </table>
 
 
+<script>
+
+    var saveButton = document.querySelectorAll(".add-button");
+    var deleteButton = document.querySelectorAll(".delete-button");
+
+    function changeColor(element, color) {
+        element.style.backgroundColor = color;
+    }
+
+    editButton.forEach(function (element) {
+        element.addEventListener("mouseover", function () {
+            changeColor(element, "lightblue");
+        });
+
+        element.addEventListener("mouseout", function () {
+            changeColor(element, "whitesmoke");
+        });
+    });
+
+    editButton.forEach(function (element) {
+        element.addEventListener("mouseover", function () {
+            changeColor(element, "red");
+        });
+
+        element.addEventListener("mouseout", function () {
+            changeColor(element, "whitesmoke");
+        });
+    });
+
+</script>

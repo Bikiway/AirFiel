@@ -1,4 +1,5 @@
-﻿using AirFiel_Mariana_Oliveira.Models;
+﻿using AirFiel_Mariana_Oliveira.Data;
+using AirFiel_Mariana_Oliveira.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,15 +13,24 @@ namespace AirFiel_Mariana_Oliveira.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ICitiesRepository _citiesRepository;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ICitiesRepository citiesRepository)
         {
             _logger = logger;
+            _citiesRepository = citiesRepository;
         }
+
 
         public IActionResult Index()
         {
-            return View();
+            var model = new SearchViewModel
+            {
+                From = _citiesRepository.GetComboCountriesAndCities(),
+                To = _citiesRepository.GetComboCountriesAndCities()
+            };
+
+            return View(model);
         }
 
         public IActionResult Privacy()

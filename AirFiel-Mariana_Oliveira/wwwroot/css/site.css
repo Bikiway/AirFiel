@@ -54,14 +54,12 @@ button.accept-policy {
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 
-body {
-    background-repeat:no-repeat;
-    background-size: 100% 295px;
+body {   
     opacity: 0.9;
     margin-bottom: 70px;
     width: 100%;

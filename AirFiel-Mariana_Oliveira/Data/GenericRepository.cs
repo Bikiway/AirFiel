@@ -1,6 +1,8 @@
 ﻿using AirFiel_Mariana_Oliveira.Data.Entities;
+using AirFiel_Mariana_Oliveira.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,6 +19,12 @@ namespace AirFiel_Mariana_Oliveira.Data
         public async Task CreateAsync(T entity)
         {
             await _dataContext.Set<T>().AddAsync(entity);
+            await SaveAllAsync();
+        }
+
+        public async Task CreateAsyncList(List<RoutesViewModel> routes)
+        {
+            await _dataContext.Set<T>().AddRangeAsync((IEnumerable<T>)routes);
             await SaveAllAsync();
         }
 

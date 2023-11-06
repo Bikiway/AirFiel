@@ -13,7 +13,7 @@ namespace AirFiel_Mariana_Oliveira.Models
         [Display(Name = "Flags")]
         public IFormFile FlagsFile { get; set; }
 
-        public IEnumerable<SelectListItem> AllFlags { get; set; }
+        public IEnumerable<SelectListItem> CityCountry { get; set; }
 
         public IEnumerable<SelectListItem> City { get; set; }
     }

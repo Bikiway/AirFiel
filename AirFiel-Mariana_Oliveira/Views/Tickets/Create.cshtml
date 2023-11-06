@@ -8,9 +8,10 @@
 <h1>Create</h1>
 
 <p>
-    <a asp-action="AddTicket" class="btn btn-success">Add Ticket</a>
     <a asp-action="ConfirmReservation" class="btn btn-primary" id="btnConfirm">Confirm your reservation</a>
 </p>
+
+
 <table class="table">
 
     <thead>
@@ -82,8 +83,6 @@
                 </td>
 
                 <td id="@item.Id">
-                    <a asp-action="Increase" asp-route-id="@item.Id" class="btn btn-warning">+</a>
-                    <a asp-action="Decrease" asp-route-id="@item.Id" class="btn btn-info">-</a>
                     <a asp-action="DeleteTicket" asp-route-id="@item.Id" class="btn btn-danger" id="btnDeleteItem">Delete</a>
                 </td>
             </tr>

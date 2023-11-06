@@ -1,0 +1,126 @@
+﻿@model AirFiel_Mariana_Oliveira.Models.UserSpaceViewModel
+@using AirFiel_Mariana_Oliveira.Data.Entities;
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<Users> UserManager
+@inject SignInManager<Users> SignInManager
+@inject RoleManager<IdentityRole> RoleManager
+@inject IEnumerable<UserSpaceViewModel> UserSpace
+@inject IEnumerable<TicketsViewModel> TicketVM
+@inject IEnumerable<Routes> Route
+@inject IEnumerable<TicketsDetailsTemp> Tickets
+
+@{
+    ViewData["Title"] = "ReservationConfirmed";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var user = await UserManager.GetUserAsync(User);
+    var ticket = Model; 
+    var route = Route.FirstOrDefault();
+    var tdt = TicketVM.FirstOrDefault();
+
+}
+
+<h1>Dear @user.FullName, your reservation has been confirmed.</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <dl class="row">
+            <dt class="col-sm-3">
+                First Name
+            </dt>
+            <dd class="col-sm-9">
+                @user.FirstName
+            </dd>
+            <dt class="col-sm-3">
+                Last Name
+            </dt>
+            <dd class="col-sm-9">
+                @user.LastName
+            </dd>
+            <dt class="col-sm-3">
+                Email
+            </dt>
+            <dd class="col-sm-9">
+                @user.UserName
+            </dd>
+            <dt class="col-sm-3">
+                CC
+            </dt>
+            <dd class="col-sm-9">
+                @ticket.CC
+            </dd>
+            <dt class="col-sm-3">
+                NIF
+            </dt>
+            <dd class="col-sm-9">
+                @ticket.NIF
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<!-- Route Information -->
+<h3>Ticket Information</h3>
+<div class="row">
+    <div class="col-md-8">
+        <dl class="row">
+            <dt class="col-sm-3">
+                Origin
+            </dt>
+            <dd class="col-sm-9">
+                @ticket.Origin
+            </dd>
+            <dt class="col-sm-3">
+                Destination
+            </dt>
+            <dd class="col-sm-9">
+                @ticket.Destination
+            </dd>
+            <dt class="col-sm-3">
+                Depart
+            </dt>
+            <dd class="col-sm-9">
+                @ticket.Depart
+            </dd>
+            <dt class="col-sm-3">
+                Return
+            </dt>
+            <dd class="col-sm-9">
+                @ticket.Return
+            </dd>
+            <dt class="col-sm-3">
+                First Class
+            </dt>
+            <dd class="col-sm-9">
+                @ticket.PassengersFirstClass
+            </dd>
+            <dt class="col-sm-3">
+                Second Class
+            </dt>
+            <dd class="col-sm-9">
+                @ticket.PassengersSecondClass
+            </dd>
+            <dt class="col-sm-3">
+                Total
+            </dt>
+            <dd class="col-sm-9">
+                @ticket.TotalPrice
+            </dd>
+        </dl>
+    </div>
+</div>
+
+
+<form asp-action="ReservationConfirmed">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="@ticket.Id" />
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary" style="background-color: cadetblue;">
+            <i class="fa fa-people-group" style="color: whitesmoke"></i> OKAY!
+        </button>
+    </div>
+</form>
+
+
+
+ 

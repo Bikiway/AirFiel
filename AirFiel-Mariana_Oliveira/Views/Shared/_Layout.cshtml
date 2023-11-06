@@ -4,36 +4,62 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <title>@ViewData["Title"] - AirFiel_Mariana_Oliveira</title>
+    <link rel="stylesheet" type="text/css" href="~/lib/datetimepicker-2.5.20/datetimepicker-2.5.20/jquery.datetimepicker.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/animate.css/animate.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/font-awesome/css/all.css" />
+    <link rel="stylesheet" href="~/css/font-awesome/js/all.js" />
+    <link rel="stylesheet" href="~/css/font-awesome/sprites/solid.svg" />
+    <link rel="stylesheet" href="~/css/font-awesome/webfonts" />
+    <link rel="stylesheet" href="~/hover.css/css/hover.css" />
+    <link rel="stylesheet" href="~/fontawesome-iconpicker/css/fontawesome-iconpicker.css" />
+    <link rel="stylesheet" href="~/fontawesome-iconpicker/js/fontawesome-iconpicker.js" />
+    <link rel="stylesheet" href="~/bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/bootstrap/js/bootstrap.js" />
+    <link rel="stylesheet" href="~/bootstrap/scss/bootstrap.scss" />
+    <link rel="stylesheet" href="~/bootstrap/scss/vendor/_rfs.scss" />
+    <link rel="stylesheet" href="~/js/site.js" />
+    <link rel="stylesheet" href="~/css/colors/css/colors.css" />
+    <link rel="stylesheet" href="~/css/OwlCarousel2/assets/owl.carousel.css" />
+    <link rel="stylesheet" href="~/css/OwlCarousel2/owl.carousel.js" />
+    <link rel="stylesheet" href="~/css/responsive-elements/responsive-elements.js" />
+    <link rel="stylesheet" href="~/css/responsiveCarousel/responsiveCarousel.js" />
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
             <div class="container">
                   <img src="~/images/planes/logodesign.png" alt="image" style="height:30px; width:40px;"/>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                   <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index" style="color:darkgoldenrod;"><b>AirFiel</b></a>
+                   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                         aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                   </button>
+                  <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                     <ul class="navbar-nav flex-grow-1">
 
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Routes" asp-action="Index">Flights</a>
-                            </li>
+                                <li class="nav-item">
+                                  <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                   <a class="nav-link text-dark" asp-area="" asp-controller="Routes" asp-action="Index">Flights</a>
+                                </li>
+
+                        @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Customer"))
+                        {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Tickets" asp-action="Create">Tickets</a>
                             </li>
-                        @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Employees"))
-                        {
-                            <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Tickets" asp-action="Index">Tickets</a>
-                            </li>
                         }
+
+                             @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Employees"))
+                             {
+                                 <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Tickets" asp-action="Index">Tickets</a>
+                                 </li>
+                             }
+
                         @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin"))
                         {
                             <li class="nav-item">
@@ -49,29 +75,32 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Tickets" asp-action="Index">Tickets</a>
                             </li>
                         }
-                    </ul>
+                     </ul>
 
                    
-                    <ul class="nav navbar-nav navbar-right">
-                        @if (this.User.Identity.IsAuthenticated)
-                        {
+                       <ul class="nav navbar-nav navbar-right">
+                          @if (this.User.Identity.IsAuthenticated)
+                          {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="ChangeUser">@this.User.Identity.Name</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="UserSpace">My Space</a>
                             </li>
 
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="LogOut">Logout</a>
                             </li>
-                        }
-                        else
-                        {
+                          }
+                         else
+                          {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
                             </li>
-                        }
-                    </ul>
+                          }
+                       </ul>
 
-                </div>
+                  </div>
             </div>
         </nav>
     </header>
@@ -81,14 +110,16 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted" style="margin-bottom:20px; margin-top:160px;">
+    <footer class="border-top footer text-muted" style="margin-bottom:10px; margin-top:170px;">
         <div class="container">
             &copy; 2023 - AirFiel_Mariana_Oliveira - <a asp-area="" asp-controller="Home" asp-action="Privacy">Contacts</a>
         </div>
     </footer>
+   
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/datetimepicker-2.5.20/datetimepicker-2.5.20/build/jquery.datetimepicker.full.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -13,39 +13,46 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Name">Capital</label>
+                <label asp-for="Name" class="control-label">Capital</label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
+            <br />
             <div class="form-group">
-                <label asp-for="CountryName">Country</label>
-                <select asp-for="CountryName" class="form-control" />
+                <label asp-for="CountryName" class="control-label">Country</label>
+                <input asp-for="CountryName" class="form-control" />
                 <span asp-validation-for="CountryName" class="text-danger"></span>
             </div>
+            <br />
             <div class="form-group">
-                <label asp-for="Description">Description</label>
+                <label asp-for="Description" class="control-label">Description</label>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
+            <br />
             <div class="form-group">
-                <label asp-for="Flags">Country Flag</label>
+                <label asp-for="Flags" class="control-label">Country Flag</label>
                 <input asp-for="Flags" class="form-control" type="file" />
                 <span asp-validation-for="Flags" class="text-danger"></span>
             </div>
+            <br />
             <div class="form-group">
-                <label asp-for="Airport">Airports Name</label>
+                <label asp-for="Airport" class="control-label">Airports Name</label>
                 <input asp-for="Airport" class="form-control" />
                 <span asp-validation-for="Airport" class="text-danger"></span>
             </div>
+            <br />
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <button type="submit" value="Create" class="btn btn-primary" style="background-color: cadetblue">
+                    <i class="fa fa-globe-europe" style="color: whitesmoke"></i> Create 
+                </button>
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" style="font-size:20px; color:darkolivegreen;">Back to List</a>
 </div>
 
 @section Scripts {

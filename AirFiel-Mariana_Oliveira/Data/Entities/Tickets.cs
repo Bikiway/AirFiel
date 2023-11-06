@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Xml.Linq;
 using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AirFiel_Mariana_Oliveira.Data.Entities
 {
@@ -27,10 +28,15 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
         public string UserName { get; set; }
         #endregion
 
+        public string CC { get; set; }
+
+        public string NIF { get; set; }
 
         public IEnumerable<TicketsDetails> Items { get; set; } //Ligação com a tabela TicketDetails.
 
+        public int? SeatNumber1Class { get; set; }
 
+        public int? SeatsNumber2Class { get; set; }
 
 
         [DisplayFormat(DataFormatString = "{0:N0}")]
@@ -51,11 +57,11 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
         #region
         //Passengers
         [Display(Name = "Fly First Class")]
-        public int PassengersFirstClass { get; set; }
+        public int? PassengersFirstClass { get; set; }
 
 
         [Display(Name = "Fly Second Class")]
-        public int PassengersSecondClass { get; set; }
+        public int? PassengersSecondClass { get; set; }
 
         #endregion
 
@@ -69,15 +75,16 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
         public int FullCapacity => capacityReduced1 + capacityReduced2;
         #endregion
 
+
         //Counts for passengers
 
-        public int FirstClassTotal => capacityReduced1 - PassengersFirstClass;
+        public int? FirstClassTotal => capacityReduced1 - PassengersFirstClass;
 
-        public int SecondClassTotal => capacityReduced2 - PassengersSecondClass;
+        public int? SecondClassTotal => capacityReduced2 - PassengersSecondClass;
 
-        public int Total => FirstClassTotal - SecondClassTotal;
+        public int? Total => FirstClassTotal - SecondClassTotal;
 
-        public int UpdateCapacityInRoutes => FullCapacity - Total;
+        public int? UpdateCapacityInRoutes => FullCapacity - Total;
 
 
 
@@ -87,6 +94,10 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
         public string Destination { get; set; }
 
         public string newUserId { get; set; }
+
+        public DateTime Depart { get; set; }
+
+        public DateTime Return { get; set;}
 
         [Required]
         public int routesId { get; set; }

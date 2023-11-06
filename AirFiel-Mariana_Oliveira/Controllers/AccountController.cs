@@ -11,6 +11,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using MimeKit;
+using AirFiel_Mariana_Oliveira.Data;
 
 namespace AirFiel_Mariana_Oliveira.Controllers
 {
@@ -19,13 +21,50 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         private readonly IUserHelper _userHelper;
         private readonly IConfiguration _configuration;
         private readonly IMailHelper _mailHelper;
+        private readonly IRoutesRepository _routesRepository;
+        private readonly ITicketsRepository _ticketsRepository;
 
-        public AccountController(IUserHelper userHelper, IMailHelper mailHelper, IConfiguration configuration)
+        public AccountController(IUserHelper userHelper, IMailHelper mailHelper, IConfiguration configuration, IRoutesRepository routesRepository, ITicketsRepository ticketsRepository)
         {
             _userHelper = userHelper;
             _mailHelper = mailHelper;
             _configuration = configuration;
+            _routesRepository = routesRepository;
+            _ticketsRepository = ticketsRepository;
+
         }
+
+        public IActionResult UserSpace(UserSpaceViewModel model, int Id)
+        {
+            var user = _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+           // var ticketBought = _ticketsRepository.ReservationConfirmed(model);
+
+            var getTicket = _ticketsRepository.GetAllTicketsAsync(this.User.Identity.Name);
+
+            if (user != null)
+            {
+                model.FirstName = user.Result.FirstName;
+                model.LastName = user.Result.LastName;
+                model.UserName = user.Result.UserName;
+                model.Origin = getTicket.Result.FirstOrDefault()?.Origin ?? null;
+                model.Destination = getTicket.Result.FirstOrDefault()?.Destination ?? null;
+                model.Depart = getTicket.Result.FirstOrDefault()?.Depart.ToShortTimeString() ?? null;
+                model.Return = getTicket.Result.FirstOrDefault()?.Return.ToShortDateString() ?? null;
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UserSpace(UserSpaceViewModel model)
+        {
+            var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+            var ticketBought = await _ticketsRepository.GetByIdAsync(model.Id);
+
+            return View(model);
+
+        }
+
 
         public IActionResult Login()
         {
@@ -80,7 +119,7 @@ namespace AirFiel_Mariana_Oliveira.Controllers
                 {
                     user = new Users
                     {
-                        FirstName = model.UserName,
+                        FirstName = model.FirstName,
                         LastName = model.LastName,
                         Email = model.UserName,
                         UserName = model.UserName,

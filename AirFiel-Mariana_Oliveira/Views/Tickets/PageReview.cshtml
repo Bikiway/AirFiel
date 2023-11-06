@@ -1,0 +1,152 @@
+﻿@model IEnumerable<AirFiel_Mariana_Oliveira.Data.Entities.Tickets>
+@{
+    ViewData["Title"] = "PageReview";
+}
+
+
+<h1>Payment</h1>
+
+<table class="table">
+
+    <thead>
+        <tr>
+
+            <th>
+                @Html.DisplayNameFor(model=>model.ClientFirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model=>model.UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model=>model.QuantityOfPassengers)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model=>model.PassengersFirstClass)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model=>model.PassengersSecondClass)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model=>model.TotalPrice)
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach(var item in Model)
+            {
+            <tr>
+           
+                <td>
+                    @Html.DisplayFor(model => item.ClientFirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.QuantityOfPassengers)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.PassengersFirstClass)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.PassengersSecondClass)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.TotalPrice)
+                </td>
+                <td id="@item.Id">
+                    <a asp-action="ReservationConfirmed" asp-route-id="@item.Id" id ="btnConfirm" class="btn btn-secondary" style="background-color: dodgerblue; color: whitesmoke;">Pay</a>
+                    <a asp-action="Create" asp-route-id="@item.Id" id="btnCancel" class="btn btn-secondary" style="background-color: tomato; color: whitesmoke;">Cancel</a>
+                 </td>
+            
+            </tr>
+        }
+    </tbody>
+   
+</table>
+
+
+<div id="confirmDialog" class="modal fade">
+
+    <div class="modal-dialog modal-sm">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title">Ticket Purchased</h4>
+                <button type="button" class="close" data-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Thank you for buying in AirFiel</p>
+                <br />
+                <p>Please, proceed</p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="btnYes">Yes</button>
+                <button type="button" class="btn btn-danger" id="btnNo">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="deleteDialog" class="modal fade">
+
+    <div class="modal-dialog modal-sm">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title">Delete</h4>
+                <button type="button" class="close" data-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to cancel this trip?</p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="btnYesDelete">Delete</button>
+                <button type="button" class="btn btn-success" id="btnNoDelete">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+    {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var id = 0;
+            var model = @Model.FirstOrDefault().Id
+
+            $("#btnConfirm").click(function () {
+                $("#confirmDialog").modal("show");
+                return false;
+            });
+            $("#btnNo").click(function () {
+                $("#confirmDialog").modal("hide");
+                return false;
+            });
+            $("#btnYes").click(function () {
+                window.location.href = "/Tickets/ReservationConfirmed" + model;
+            });
+
+            $("#btnCancel").click(function () {
+                id = $(this).parent()[0].id;
+                $("#deleteDialog").modal("show");
+                return false;
+            });
+            $("#btnNoDelete").click(function () {
+                $("#deleteDialog").modal("hide");
+                return false;
+            });
+            $("#btnYesDelete").click(function () {
+                window.location.href = "/Tickets/DeleteTicket/" + id;
+                window.location.href = "/Tickets/Create";
+                return false;
+            });
+        });
+    </script>
+}
+

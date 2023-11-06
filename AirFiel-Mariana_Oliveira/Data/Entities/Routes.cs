@@ -21,12 +21,13 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
         [Display(Name = "Origin")]
         public Cities Origin { get; set; }
 
+        public int FromCountryCityID { get; set; }
+
 
         [Display(Name = "Destination")]
         public Cities Destination { get; set; }
 
-        public ICollection<RoutesDetails> AssociatedRoutes { get; set; }
-
+        public int ToCountryCityId { get; set; }
 
         public IEnumerable<RoutesDetails> Items { get; set; } //Lista da RoutesDetails.
         public int Lines => Items == null ? 0 : Items.Count();
@@ -36,7 +37,6 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
         [Display(Name = "Date/Time Depart")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm tt}", ApplyFormatInEditMode = false)]
         public DateTime Depart { get; set; }
-
 
         [Required]
         [Display(Name = "Date/Time Return")]
@@ -97,11 +97,5 @@ namespace AirFiel_Mariana_Oliveira.Data.Entities
         public double PricePerSeatInFirstClass => PriceClass1 / Convert.ToDouble(Capacity1);
 
         public double PricePerSeatInSecondClass => PriceClass2 / Convert.ToDouble(Capacity2);
-
-
-        //Discount For First Client and 10th uses for travelling.
-        public double Discounts { get; set; }
-
-
     }
 }

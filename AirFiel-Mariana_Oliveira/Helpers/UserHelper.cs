@@ -1,6 +1,7 @@
 ﻿using AirFiel_Mariana_Oliveira.Data.Entities;
 using AirFiel_Mariana_Oliveira.Models;
 using Microsoft.AspNetCore.Identity;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AirFiel_Mariana_Oliveira.Helpers
@@ -25,27 +26,6 @@ namespace AirFiel_Mariana_Oliveira.Helpers
         public async Task AddUserToRoleAsync(Users user, string roleName)
         {
             await _userManager.AddToRoleAsync(user, roleName);
-        }
-
-        public async Task<IdentityResult> AnonymousPersonAsync(Users user, string password)
-        {
-            if (user != null && password == null)
-            {
-                user.Email = null;
-                user.UserName = null;
-                user.PasswordHash = null;
-
-                var result = await _userManager.CreateAsync(user);
-
-                if(result.Succeeded)
-                {
-                    await _userManager.AddToRoleAsync(null, "Anonymous");
-                }
-
-               return result;
-            }
-
-            return IdentityResult.Failed();
         }
 
         public async Task<IdentityResult> ChangePasswordAsync(Users user, string oldPassword, string newPassword)
@@ -83,12 +63,26 @@ namespace AirFiel_Mariana_Oliveira.Helpers
 
         public async Task<Users> GetUserByEmailAsync(string email)
         {
+            if(email == null)
+            {
+                return await _userManager.FindByEmailAsync("fakemail@yopmail.com");
+            }
             return await _userManager.FindByEmailAsync(email);
         }
 
         public async Task<Users> GetUserByIdAsync(string userId)
         {
             return await _userManager.FindByIdAsync(userId);
+        }
+
+        public async Task<Users> GetUserByUserNameAsync(string userName)
+        {
+            if(!string.IsNullOrEmpty(userName))
+            {
+                return await _userManager.FindByNameAsync(userName);
+            }
+
+            return null;
         }
 
         public async Task<bool> IsUserInRoleAsync(Users user, string roleName)

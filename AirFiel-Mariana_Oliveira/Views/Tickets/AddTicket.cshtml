@@ -52,7 +52,7 @@
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IdaEVolta" /> @Html.DisplayNameFor(model => model.IdaEVolta)
                 </label>
-                </div>
+            </div>
 
             <div class="form-group">
                 <label asp-for="Passengers" class="control-label"></label>
@@ -60,14 +60,118 @@
                 <span asp-validation-for="Passengers" class="text-danger"></span>
             </div>
 
+               <div class="form-group">
+                <label asp-for="PassengersFirstClass" class="control-label"></label>
+                <input asp-for="PassengersFirstClass" class="form-control"/>
+                <span asp-validation-for="PassengersFirstClass" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="PassengersSecondClass" class="control-label"></label>
+                <input asp-for="PassengersSecondClass" class="form-control" />
+                <span asp-validation-for="PassengersSecondClass" class="text-danger"></span>
+            </div>
+
+
+            <h1>Choose Passengers Seats</h1>
+
+            <div class="col-xl-8 col-lg-8 col-md-12">
+                <h2 class="blog-heading"><i class="fa fa-list" aria-hidden="true"></i> Available seats</h2>
+                <hr />
+                <div id="mymenu">
+                    @{
+                        var result = Model.Items.Count();
+
+                        if (result >= 0)
+                        {
+                            <h3>First Class Tickets</h3>
+
+                            for (int i = 1; i <= (int)ViewData["N1Seats"]; i++)
+                            {
+                                <button type="button" class="btn btn-success btn-rounded-md seat-button" data-seat-id="@i" data-flight-id="@Model.routesId">Seat @i</button>
+                            }
+
+                            <br />
+                            <br />
+
+                            <h3>Second Class Tickets</h3>
+
+                            for (int i = 1; i <= (int)ViewData["N2Seats"]; i++)
+                            {
+                                <button type="button" class="btn btn-success btn-rounded-md seat-button" data-seat-id="@i" data-flight-id="@Model.routesId">Seat @i</button>
+                            }
+                        }
+                        else
+                        {
+                            List<int> mySeats1 = new List<int>();
+                            List<int> mySeats2 = new List<int>();
+                            
+                            <h3>First Class Tickets</h3>
+
+                            foreach (var item in Model.Items)
+                            {
+                                mySeats1.Add(item.SeatNumber1Class.Value);
+                            }
+
+                            for (int i = Model.PassengersFirstClass; i <= (int)ViewData["N1Seats"]; i++)
+                            {
+                                var ItExists = mySeats1.Contains(i);
+                                var seatClass = ItExists ? "btn-danger" : "btn-success";
+                                var seatDisabled = ItExists ? "disabled" : "";
+
+                                <button type="button" class="btn btn-rounded-md seat-button @seatClass" data-seat-id="@i" data-flight-id="@Model.routesId" @seatDisabled>Seat @i</button>
+                            }
+
+                            <br/>
+                            <br/>
+
+                            <h3>Second Class Tickets</h3>
+
+                            foreach (var item in Model.Items)
+                            {
+                                mySeats2.Add(item.SeatsNumber2Class.Value);
+                            }
+
+                            for (int i = Model.PassengersSecondClass; i <= (int)ViewData["N2Seats"]; i++)
+                            {
+                                var ItExists = mySeats2.Contains(i);
+                                var seatClass = ItExists ? "btn-danger" : "btn-success";
+                                var seatDisabled = ItExists ? "disabled" : "";
+
+                                <button type="button" class="btn btn-rounded-md seat-button @seatClass" data-seat-id="@i" data-flight-id="@Model.routesId" @seatDisabled>Seat @i</button>
+                            }
+                        }
+                    }
+                </div>
+
+            </div>
+
+            <br/>
+            <br/>
+
+
             <div class="form-group">
                 <button type="submit" value="Create" class="btn btn-primary" style="background-color: cadetblue">
-                    <i class="fa fa-plane-departure" style="color: whitesmoke"></i> Create
+                    <i class="fa fa-plane-departure" style="color: whitesmoke"></i> Create 
                 </button>
-                <a asp-action="Create" class="btn btn-success" style="font-size: 15px; color: darkgoldenrod;">Back to List</a>
+                <a asp-action="Create" class="btn btn-success" style="font-size: 15px; color: darkgoldenrod; background-color:azure">Back to List</a>
             </div>
         </form>
     </div>
 
 </div>
 
+<br/>
+<br/>
+<br/>
+
+@section Scripts{
+    <script type='text/javascript'>
+        $(function () {
+            $('.seat-button').click(function () {
+                $(this).toggleClass('btn-success btn-danger');
+            });
+        });
+    </script>
+
+    }

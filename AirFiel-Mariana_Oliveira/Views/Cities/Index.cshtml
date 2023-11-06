@@ -4,10 +4,10 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Add Cities and Countries</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" style="font-size: 15px; color: cadetblue;">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -54,9 +54,50 @@
             <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary edit-button" style="background-color: whitesmoke; color: grey;">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary details-button" style="background-color: whitesmoke; color: grey;">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-secondary delete-button" style="background-color: whitesmoke; color: grey;">Delete</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
+<script>
+
+    var editButton = document.querySelectorAll(".edit-button");
+    var detailsButton = document.querySelectorAll(".details-button");
+    var deleteButton = document.querySelectorAll(".delete-button");
+
+    function changeColor(element, color) {
+        element.style.backgroundColor = color;
+    }
+
+    editButton.forEach(function (element) {
+        element.addEventListener("mouseover", function () {
+            changeColor(element, "yellow");
+        });
+
+        element.addEventListener("mouseout", function () {
+            changeColor(element, "whitesmoke");
+        });
+    });
+
+    detailsButton.forEach(function (element) {
+        element.addEventListener("mouseover", function () {
+            changeColor(element, "lightblue");
+        });
+
+        element.addEventListener("mouseout", function () {
+            changeColor(element, "whitesmoke");
+        });
+    });
+
+    deleteButton.forEach(function (element) {
+        element.addEventListener("mouseover", function () {
+            changeColor(element, "red");
+        });
+
+        element.addEventListener("mouseout", function () {
+            changeColor(element, "whitesmoke");
+        });
+    });
+
+</script>

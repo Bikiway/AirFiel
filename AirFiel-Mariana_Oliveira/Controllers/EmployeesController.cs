@@ -80,12 +80,9 @@ namespace AirFiel_Mariana_Oliveira.Controllers
                 var user = await _userHelper.GetUserByEmailAsync(model.UserName);
 
                 if (user == null)
-                {
-                    // var IdEmploy = await _userHelper.GetUserByIdAsync(user.Id);
-
+                { 
                     user = new Users
                     {
-                        //Id = change.UserName,
                         FirstName = model.FirstName,
                         LastName = model.LastName,
                         Email = model.UserName,
@@ -177,52 +174,34 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(EmployeeViewModel model)
         {
-            var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+            try
+            {             
+                var path = model.ProfileImage;
 
-            if (user != null)
-            {
-                try
+                if (model.ImageProfile != null && model.ImageProfile.Length > 0)
                 {
-                    model.FirstName = user.FirstName;
-                    model.LastName = user.LastName;
-                    model.Age = user.Age;
-                    model.PhoneNumber = user.PhoneNumber;
-                    model.ProfileImage = user.ImageUserProfile;
-
-                    var path = model.ProfileImage;
-
-                    if (model.ImageProfile != null && model.ImageProfile.Length > 0)
-                    {
-                        path = await _imageHelper.UploadImageAsync(model.ImageProfile, "employees");
-                    }
-
-                    var employees = _converterHelper.ToEmployee(model, path, false);
-
-                    employees.Users = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
-                    await _employeeRepository.UpdateAsync(employees);
-
-
-                    var response = await _userHelper.UpdateUSerAsync(user);
-
-                    if (response.Succeeded)
-                    {
-                        ViewBag.UserMessage = "User updated!";
-                    }
+                    path = await _imageHelper.UploadImageAsync(model.ImageProfile, "employees");
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!await _employeeRepository.ExistAsync(model.Id))
-                    {
-                        return new NotFoundViewResult("EmployeeNotFound");
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                
+                var user = await _employeeRepository.GetByIdAsync(model.Id);
+                model.UserName = user.UserName;
+
+                user = _converterHelper.ToEmployee(model, path, false);
+                await _employeeRepository.UpdateAsync(user);
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(model);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!await _employeeRepository.ExistAsync(model.Id))
+                {
+                    return new NotFoundViewResult("EmployeeNotFound");
+                }
+                else
+                {
+                    throw;
+                }
+            }
         }
 
         // GET: Employees/Delete/5
@@ -322,11 +301,13 @@ namespace AirFiel_Mariana_Oliveira.Controllers
             }
 
             var employees = await _employeeRepository.GetByIdAsync(id);
+            //var user = await _userHelper.GetUserByUserNameAsync(employees.UserName);
 
             if (employees != null)
             {
                 await _employeeRepository.DeleteAsync(employees);
             }
+
 
             return RedirectToAction(nameof(Index));
         }

@@ -3,6 +3,7 @@ using AirFiel_Mariana_Oliveira.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AirFiel_Mariana_Oliveira.Data
@@ -25,23 +26,8 @@ namespace AirFiel_Mariana_Oliveira.Data
             await _userHelper.CheckRoleAsync("Admin");
             await _userHelper.CheckRoleAsync("Employees");
             await _userHelper.CheckRoleAsync("Customer");
-            await _userHelper.CheckRoleAsync("Anonymous");
 
             #region
-
-                var resulted = await _userHelper.AddUserAsync(null, null);
-
-                if (resulted != IdentityResult.Success)
-                {
-                    throw new InvalidOperationException("Could not create the anonymous user in Seeder");
-                }
-
-                var isRole = await _userHelper.IsUserInRoleAsync(null, "Anonymous");
-                if (!isRole)
-                {
-                    await _userHelper.AddUserToRoleAsync(null, "Anonymous");
-                }
-            
 
             #endregion
 
@@ -75,6 +61,30 @@ namespace AirFiel_Mariana_Oliveira.Data
                 if (inRole)
                 {
                     await _userHelper.AddUserToRoleAsync(employee, "Employees");
+                }
+
+                if (!_context.Employee.Any())
+                {
+                    AddEmployees("Paula", "Coelho", "39", "paulacoelho@yopmail.com", "paulacoelho@yopmail.com", "915603003", "CoPilot");
+                    AddEmployees("João", "Bola", "45", "joaobola@yopmail.com", "joaobola@yopmail.com", "938741258", "Pilot");
+
+                    await _context.SaveChangesAsync();
+                }
+
+                if (!_context.City.Any())
+                {
+                    AddCities("Penafiel", "Portugal", "Very Charismatic", "AirFiel");
+                    AddCities("Madrid", "Espanha", "Very busy", "MadridPort");
+
+                    await _context.SaveChangesAsync();
+                }
+
+                if (!_context.airplanes.Any())
+                {
+                    AddPlanes("Airbus 500", 2, 200, 250);
+                    AddPlanes("Boeing 777", 2, 300, 350);
+
+                    await _context.SaveChangesAsync();
                 }
             }
             #endregion
@@ -110,7 +120,67 @@ namespace AirFiel_Mariana_Oliveira.Data
             {
                 await _userHelper.AddUserToRoleAsync(user, "Admin");
             }
+
+            if(!_context.Employee.Any())
+            {
+                AddEmployees("Paula","Coelho", "39","paulacoelho@yopmail.com","paulacoelho@yopmail.com","915603003", "CoPilot");
+                AddEmployees("João", "Bola", "45", "joaobola@yopmail.com", "joaobola@yopmail.com", "938741258", "Pilot");
+
+                await _context.SaveChangesAsync();
+            }
+
+            if(!_context.City.Any())
+            {
+                AddCities("Penafiel", "Portugal", "Very Charismatic", "AirFiel");
+                AddCities("Madrid", "Espanha", "Very busy", "MadridPort");
+
+                await _context.SaveChangesAsync();
+            }
+
+            if(!_context.airplanes.Any())
+            {
+                AddPlanes("Airbus 500", 2, 200, 250);
+                AddPlanes("Boeing 777", 2, 300, 350);
+
+                await _context.SaveChangesAsync();
+            }
             #endregion
+        }
+
+        private void AddEmployees(string firstName, string lastName, string age, string email, string userName, string phoneNumber, string experience)
+        {
+            _context.Employee.Add(new Employees
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                Age = age,
+                Email = email,
+                UserName = userName,
+                PhoneNumber = phoneNumber,
+                Experience = experience
+            });
+        }
+
+        private void AddCities(string city, string country, string description, string airport)
+        {
+            _context.City.Add(new Cities
+            {
+                Name = city,
+                CountryName = country,
+                Description = description,
+                Airport = airport
+            });
+        }
+
+        private void AddPlanes(string name, int classes, int capacity1, int capacity2)
+        {
+            _context.airplanes.Add(new Airplanes
+            {
+                Name = name,
+                HowManyClasses = classes,
+                Capacity1 = capacity1,
+                Capacity2 = capacity2
+            });
         }
     }
 }

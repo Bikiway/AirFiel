@@ -41,13 +41,15 @@
     </div>
 <div class="col-md-4">
 
-    <img src="@Url.Content(Model.Flags)" alt="Image" style="width:300px; height:450px; max-width:100%; height:auto">
+            <img src="@Url.Content(Model.Flags)" alt="Image" style="width:400px; height:350px; margin-left: 30px; margin-top: -15px;">
 
 </div>
 </div>
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <button type="submit" value="Create" class="btn btn-primary" style="background-color: darksalmon">
+            <i class="fa fa-city" style="color: lightgray"></i> Create
+        </button>
+        <a asp-action="Index" style="font-size: 20px; color:darkolivegreen;">Back to List</a>
     </form>
 </div>

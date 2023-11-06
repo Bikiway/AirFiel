@@ -1,0 +1,83 @@
+﻿@model AirFiel_Mariana_Oliveira.Models.UserSpaceViewModel
+@using AirFiel_Mariana_Oliveira.Data.Entities;
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<Users> UserManager
+@inject SignInManager<Users> SignInManager
+@inject RoleManager<IdentityRole> RoleManager
+
+
+@{
+    ViewData["Title"] = "UserSpace";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var user = await UserManager.GetUserAsync(User);
+}
+
+
+
+<div class="col-md-8">
+    <h2>Welcome, @user.FullName!</h2>
+</div>
+
+<br />
+<br />
+
+<!-- Display user details -->
+<div class="row">
+    <div class="col-md-8">
+        <dl class="row">
+            <dt class="col-sm-3">
+                First Name
+            </dt>
+            <dd class="col-sm-9">
+                @user.FirstName
+            </dd>
+            <dt class="col-sm-3">
+                Last Name
+            </dt>
+            <dd class="col-sm-9">
+                @user.LastName
+            </dd>
+            <dt class="col-sm-3">
+                Email
+            </dt>
+            <dd class="col-sm-9">
+                @user.UserName
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<br />
+<br />
+
+<h3>Historic</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Origin</th>
+            <th>Destination</th>
+            <th>Depart</th>
+            <th>Return</th>
+        </tr>
+    </thead>
+    <tbody>
+            <tr>           
+                <td>@Html.DisplayFor(model => model.Origin)</td>
+                <td>@Html.DisplayFor(model => model.Destination)</td>
+                <td>@Html.DisplayFor(model => model.Depart)</td>
+                <td>@Html.DisplayFor(model => model.Return)</td>
+            </tr>           
+    </tbody>
+</table>
+
+<br />
+<br />
+<br />
+<a asp-controller="Account" asp-action="ChangeUser" class="btn btn-primary" style="background-color:cadetblue;width:250px;height:35px;color: whitesmoke;">
+    <i class="fa fa-arrow-right" style="color:darkgoldenrod;"></i>  Change User
+</a>
+<a asp-controller="Home" asp-action="Index" class="btn btn-primary" style="background-color:antiquewhite; width:250px;height:35px; color: darkolivegreen">
+    <i class="fa fa-arrow-left" style="color:thistle;"></i>  Go To Home
+</a>
+

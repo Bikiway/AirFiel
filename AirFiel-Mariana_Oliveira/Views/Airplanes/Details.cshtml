@@ -35,15 +35,14 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Capacity2)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImagePlane)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImagePlane)
-        </dd>
     </dl>
 </div>
+<div class="col-md-4">
+
+    <img src="@Url.Content(Model.ImagePlane)" alt="Image" style="width:400px; height:350px; margin-left: 450px; margin-top: -90px;">
+
+</div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id" style="font-size: 20px; color:darkgoldenrod;">Edit</a> |
+    <a asp-action="Index" style="font-size:20px; color:darkolivegreen;">Back to List</a>
 </div>

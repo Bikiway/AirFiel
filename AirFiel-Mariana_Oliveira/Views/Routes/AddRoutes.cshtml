@@ -22,6 +22,7 @@
                 <select asp-for="OriginId" asp-items="Model.Origem" class="form-control"></select>
                 <span asp-validation-for="OriginId" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="DestinationId" class="control-label">Arrival City</label>
                 <select asp-for="DestinationId" asp-items="Model.Destino" class="form-control"></select>
@@ -30,26 +31,32 @@
 
             <div class="form-group">
                 <label asp-for="Depart" class="control-label"></label>
-                <div class="input-group-date" id="datetimepicker1">
-                    <input type="text" asp-for="Depart" class="form-control"/>
+                <div class="input-group-date" data-provider="datepicker" >
+                    <input type="text" asp-for="Depart" id="datetimepicker1" class="form-control" />
+                    <div class="input-group-append">
+                        <scan class="input-group-text"><i class="fa fa-calendar"></i></scan>
+                    </div>
                     <span asp-validation-for="Depart" class="text-danger"></span>
-                </div>
+                </div>                            
             </div>
-
+       
             <div class="form-group">
                 <label asp-for="Return" class="control-label"></label>
-                <div class="input-group-date" id="datetimepicker2">
-                    <input type="text" asp-for="Return" class="form-control"/>
+                <div class="input-group-date" data-provide="datepicker" >
+                    <input type="text" asp-for="Return" id="datetimepicker2" class="form-control" />
+                    <div class="input-group-append">
+                        <scan class="input-group-text"><i class="fa fa-calendar"></i></scan>
+                    </div>
                     <span asp-validation-for="Return" class="text-danger"></span>
-                </div>
+                </div>               
             </div>
-
 
             <div class="form-group">
                 <label asp-for="PilotsId" class="control-label">Pilot</label>
                 <select asp-for="PilotsId" asp-items="Model.Pilot" class="form-control"></select>
                 <span asp-validation-for="PilotsId" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="CoPilotsId" class="control-label">Co-Pilot</label>
                 <select asp-for="CoPilotsId" asp-items="Model.CoPilot" class="form-control"></select>
@@ -68,7 +75,7 @@
                 <span asp-validation-for="priceId" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" style="margin-bottom: 50px;">
                 <button type="submit" value="Create" class="btn btn-primary" style="background-color: cadetblue">
                     <i class="fa fa-plane-departure" style="color: whitesmoke"></i> Create |
                 </button>
@@ -85,14 +92,18 @@
     }
 
     <script>
-            $('#datetimepicker1').datetimepicker({
-                format: 'd/m/Y H:i',
-            });
+        $('#datetimepicker1').datetimepicker({
+            format: 'd/m/Y H:i',
+            minDate: 0,
+            value: new Date(Date.now) // Set the value to the current date and time
+        });
 
         $('#datetimepicker2').datetimepicker({
             format: 'd/m/Y H:i',
-            });
+            minDate: 0,
+            value: new Date(Date.now) // Set the value to the current date and time
+        });
     </script>
-
 }
+
 

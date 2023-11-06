@@ -13,6 +13,7 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
+
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -35,18 +36,24 @@
             </div>
             <div class="form-group">
                 <label asp-for="ImagePlane" class="control-label"></label>
-                <input asp-for="ImagePlane" class="form-control" />
+                <input asp-for="ImagePlane" class="form-control" type="file" />
                 <span asp-validation-for="ImagePlane" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <button type="submit" value="Save" class="btn btn-primary" style="background-color: wheat">
+                    <i class="fa fa-plane" style="color: chocolate"></i> Edit
+                </button>
             </div>
         </form>
     </div>
 </div>
 
+<div class="col-md-4">
+    <img src="@Url.Content(Model.ImagePlane)" alt="Image" style="width:400px; height:350px; margin-left: 450px; margin-top: -410px;">
+</div>
+
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" style="font-size:20px; color:darkolivegreen;">Back to List</a>
 </div>
 
 @section Scripts {

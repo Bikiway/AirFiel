@@ -1,0 +1,28 @@
+﻿@model AirFiel_Mariana_Oliveira.Models.FlightListAndSearchViewModel
+
+
+
+
+<form asp-controller="Routes" asp-action="Search" class="form-horizontal">
+    <nav class="navbar navbar-light bg-white">
+        <div class="form-icons">
+            <label class="control-label">Country of Departure</label>
+            <select asp-for="searchViewModel.FromCountryCityId" asp-items="Model.searchViewModel.From" class="form-control"></select>
+        </div>
+        <div class="form-icons">
+            <label class="control-label">Destination Country</label>
+            <select asp-for="searchViewModel.ToCountryCityID" asp-items="Model.searchViewModel.To" class="form-control"></select>
+        </div>
+        <div class="form-icons">
+            <label class="control-label">Flight Date</label>
+            <input asp-for="searchViewModel.FlightDate" class="form-control" value="" placeholder="Date" type="date">
+        </div>
+        <div class="form-icons">
+            <button type="submit" class="btn btn-light">Search</button>
+        </div>
+        <div class="form-icons">
+            <button asp-area="" asp-controller="Routes" asp-action="Index" class="btn btn-secondary">All Flights</button>
+        </div>
+
+    </nav>
+</form>
