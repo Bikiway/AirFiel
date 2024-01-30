@@ -149,6 +149,7 @@
                         else
                         {
                              <input type="hidden" asp-for="@item.Id">
+                             <input type="hidden" asp-for="@item.PricePerTicket">
                              <a asp-controller="Tickets" asp-action="AddTicket" asp-route-id="@item.Id" class="btn btn-primary buy-button" style="background-color: whitesmoke; color: grey;">Buy</a>
                    
                         }

@@ -34,22 +34,22 @@ namespace AirFiel_Mariana_Oliveira.Controllers
 
         }
 
-        public IActionResult UserSpace(UserSpaceViewModel model, int Id)
+        public async Task<IActionResult> UserSpace(UserSpaceViewModel model, int Id)
         {
-            var user = _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
+            var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
            // var ticketBought = _ticketsRepository.ReservationConfirmed(model);
 
-            var getTicket = _ticketsRepository.GetAllTicketsAsync(this.User.Identity.Name);
+            var getTicket = await _ticketsRepository.GetAllTicketsAsync(this.User.Identity.Name);
 
             if (user != null)
             {
-                model.FirstName = user.Result.FirstName;
-                model.LastName = user.Result.LastName;
-                model.UserName = user.Result.UserName;
-                model.Origin = getTicket.Result.FirstOrDefault()?.Origin ?? null;
-                model.Destination = getTicket.Result.FirstOrDefault()?.Destination ?? null;
-                model.Depart = getTicket.Result.FirstOrDefault()?.Depart.ToShortTimeString() ?? null;
-                model.Return = getTicket.Result.FirstOrDefault()?.Return.ToShortDateString() ?? null;
+                model.FirstName = user.FirstName;
+                model.LastName = user.LastName;
+                model.UserName = user.UserName;
+                model.Origin = getTicket.FirstOrDefault()?.Origin ?? null;
+                model.Destination = getTicket.FirstOrDefault()?.Destination ?? null;
+                model.Depart = getTicket.FirstOrDefault()?.Depart.ToShortTimeString() ?? null;
+                model.Return = getTicket.FirstOrDefault()?.Return.ToShortDateString() ?? null;
             }
 
             return View(model);
@@ -58,12 +58,44 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         [HttpPost]
         public async Task<IActionResult> UserSpace(UserSpaceViewModel model)
         {
-            var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
-            var ticketBought = await _ticketsRepository.GetByIdAsync(model.Id);
+            if (ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
 
+                if (user != null)
+                {
+                    // Update the user's information based on the changes made in the model
+                    user.FirstName = model.FirstName;
+                    user.LastName = model.LastName;
+                    user.UserName = model.UserName;
+
+                    // Save the updated user information
+                    var result = await _userHelper.UpdateUSerAsync(user);
+
+                    if (result.Succeeded)
+                    {
+                        // Update was successful, you can display a success message or redirect
+                        return RedirectToAction("UserSpace");
+                    }
+                    else
+                    {
+                        // If the update failed, add the errors to the ModelState for display
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "User not found.");
+                }
+            }
+
+            // If ModelState is not valid or if there was an error, return to the same view
             return View(model);
-
         }
+
 
 
         public IActionResult Login()

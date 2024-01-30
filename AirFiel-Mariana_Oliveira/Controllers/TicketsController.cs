@@ -59,18 +59,7 @@ namespace AirFiel_Mariana_Oliveira.Controllers
         public async Task<IActionResult> AddTicket(TicketsViewModel tvm, int id)
         {
             var routes = await _routesRepository.GetByIdAsync(id);
-           // var idaVolta = await _ticketRepository.IdaEVoltaBool(id);
-            var ticket = await _ticketRepository.GetPricePerTicketFromRoutes(id);
-
-            // Get the capacities for the specific route identified by 'id'
-            var route = await _dataContext.Route
-                .Where(c => c.Id == id)
-                .Select(c => new
-                {
-                    Capacity1 = c.Capacity1,
-                    Capacity2 = c.Capacity2
-                })
-                .FirstAsync();
+           // var ticket = await _ticketRepository.GetPricePerTicketFromRoutes(routes.Id);
 
             var model = new TicketsViewModel
             {
@@ -87,11 +76,11 @@ namespace AirFiel_Mariana_Oliveira.Controllers
                 SeatNumber2 = tvm.SeatId2,
                 SeatId1 = tvm.SeatId1,
                 SeatId2 = tvm.SeatId2,
-                NumberOfSeats1 = route.Capacity1,
-                NumberOfSeats2 = route.Capacity2,
+                NumberOfSeats1 = routes.Capacity1,
+                NumberOfSeats2 = routes.Capacity2,
                 Items = await _ticketRepository.GetAllReservationsFromRoutes(routes.Id),
                 routesId = routes.Id,
-                PricePerTicketId = Convert.ToInt32(ticket),
+                PricePerTicketId = (int)Math.Floor( routes.GetFullPrice / (routes.Capacity1 + routes.Capacity2)),
                 IdaEVolta = tvm.IdaEVolta,
             };
 

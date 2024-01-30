@@ -25,97 +25,21 @@ namespace AirFiel_Mariana_Oliveira.Data
         public async Task<IEnumerable<TicketsDetailsTemp>> GetAllReservationsFromRoutes(int id)
         {
             return await _dataContext.TicketDetailsTemps.Where(o => o.routeId == id).ToListAsync();
-
         }
 
         public async Task AddTicketToBoughtTickets(TicketsViewModel model, string userName)
         {
             var user = await _userHelper.GetUserByEmailAsync(userName);
-            string password = string.Empty;
-            string role = string.Empty;
 
-            if (user == null)   
+            if (user == null)
             {
-                password = GeneratePassword();
-                role = model.UserName;
-                var users = this.AddNewUser(role, "Customer", password);
-
-                var ticketForNewUser = new TicketsViewModel
-                {
-                    UserName = role,
-                };
-
-                var newUser = new Users()
-                {
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    Age = model.Age,
-                    Email = model.UserName,
-                    UserName = model.UserName,
-                    EmailConfirmed = true,
-                };
-
-                await _userHelper.AddUserAsync(newUser, password);
-
-                int routesIds = _dataContext.Route.FirstOrDefault()?.Id ?? 0;
-                var routeIds = GetIdFromRoutes(routesIds);
-                var pricess = GetPricePerTicketFromRoutes(routesIds);
-                var idaVoltas = IdaEVoltaBool(routesIds);
-                var seatss = GetCapacitiesFromRoutes(routesIds);
-                var items = GetAllReservationsFromRoutes(routesIds);
-
-                var routes = await _dataContext.Route.FindAsync(routesIds);
-
-                if (routes == null)
-                {
-                    return;
-                }
-
-                var ticketDetailsTemps = await _dataContext.TicketDetailsTemps
-                    .Where(tdt => tdt.user == newUser && tdt.routesId == routes)
-                    //.Where(tdt => tdt.user == newUser && tdt.user == newUser)
-                    .FirstOrDefaultAsync();
-
-                if (ticketDetailsTemps == null)
-                {
-                    ticketDetailsTemps = new TicketsDetailsTemp
-                    {
-                        Id = model.Id,
-                        FirstName = model.FirstName,
-                        LastName = model.LastName,
-                        Age = model.Age,
-                        Passengers = model.Passengers,
-                        CC = model.CC,
-                        NIF = model.NIF,
-                        IdaEVolta = idaVoltas.Result,
-                        routesId = routes,
-                        PricePerTicket = pricess.Id,
-                        UserName = model.UserName,
-                        PassengersFirstClass = model?.PassengersFirstClass,
-                        PassengersSecondClass = model?.PassengersSecondClass,
-                        SeatNumber1Class = model?.SeatId1,
-                        SeatsNumber2Class = model?.SeatId2,
-                        user = newUser,
-                    };
-
-                    _dataContext.TicketDetailsTemps.Add(ticketDetailsTemps);
-                }
-
-                await _dataContext.SaveChangesAsync();
-
+                return;
             }
 
             else
-            {
-
-                int routesId = _dataContext.Route.FirstOrDefault()?.Id ?? 0;
-                var routeId = GetIdFromRoutes(routesId);
-                var prices = GetPricePerTicketFromRoutes(routesId);
-                var idaVolta = IdaEVoltaBool(routesId);
-                var seats = GetCapacitiesFromRoutes(routesId);
-                var item = GetAllReservationsFromRoutes(routesId);
-
-                var route = await _dataContext.Route.FindAsync(routesId);
+            {               
+                var idaVolta = await IdaEVoltaBool(model.Id);
+                var route = await _dataContext.Route.FindAsync(model.routesId);
 
                 if (route == null)
                 {
@@ -127,6 +51,10 @@ namespace AirFiel_Mariana_Oliveira.Data
                     .Where(tdt => tdt.user == user && tdt.user == user)
                     .FirstOrDefaultAsync();
 
+
+                var seats = await GetCapacitiesFromRoutes(route.Id);
+                var item = await GetAllReservationsFromRoutes(route.Id);
+
                 if (ticketDetailsTemp == null)
                 {
                     ticketDetailsTemp = new TicketsDetailsTemp
@@ -137,9 +65,9 @@ namespace AirFiel_Mariana_Oliveira.Data
                         Passengers = model.Passengers,
                         CC = model.CC,
                         NIF = model.NIF,
-                        IdaEVolta = idaVolta.Result,
+                        IdaEVolta = idaVolta,
                         routesId = route,
-                        PricePerTicket = prices.Id,
+                        PricePerTicket = model.PricePerTicketId,
                         UserName = model.UserName,
                         PassengersFirstClass = model?.PassengersFirstClass,
                         PassengersSecondClass = model?.PassengersSecondClass,
@@ -174,15 +102,14 @@ namespace AirFiel_Mariana_Oliveira.Data
                 return false;
             }
 
-            int routesId = ticketTemp.FirstOrDefault().routesId.Id;
-            var capacities = GetCapacitiesFromRoutes(routesId);
-            var routeId = GetIdFromRoutes(routesId);
-            var prices = GetPricePerTicketFromRoutes(routesId);
-            var origin = GetOriginAirport(routesId);
-            var destination = GetDestinationAirport(routesId);
-            var idaVolta = IdaEVoltaBool(routesId);
-            var depart = GetDepartFromRoutes(routesId);
-            var returned = GetReturnFromRoutes(routesId);
+            var routesId = await GetIdFromRoutes(ticketTemp.FirstOrDefault().routesId.Id);
+            var capacities = await GetCapacitiesFromRoutes(routesId);
+            // var prices = await GetPricePerTicketFromRoutes(routesId);
+            var origin = await GetOriginAirport(routesId);
+            var destination = await GetDestinationAirport(routesId);
+            var idaVolta = await IdaEVoltaBool(routesId);
+            var depart = await GetDepartFromRoutes(routesId);
+            var returned = await GetReturnFromRoutes(routesId);
 
             var details = ticketTemp.Select(o => new TicketsDetails
             {
@@ -191,8 +118,8 @@ namespace AirFiel_Mariana_Oliveira.Data
                 CC = o.CC,
                 NIF = o.NIF,
                 QuantityOfPassengers = o.Passengers,
-                PricePerTicket = prices.Id,
-                routesId = routeId.Id,
+                PricePerTicket = o.PricePerTicket,
+                routesId = routesId,
                 IdaEVolta = o.IdaEVolta,
                 PassengersFirstClass = o?.PassengersFirstClass,
                 PassengersSecondClass = o?.PassengersSecondClass,
@@ -219,15 +146,15 @@ namespace AirFiel_Mariana_Oliveira.Data
                 CC = details.FirstOrDefault().CC,
                 NIF = details.FirstOrDefault().NIF,
                 DeliveryDate = DateTime.Now,
-                capacityReduced1 = (await capacities)[0],
-                capacityReduced2 = (await capacities)[1],
-                routesId = await routeId,
-                Origin = await origin,
+                capacityReduced1 = (capacities)[0],
+                capacityReduced2 = (capacities)[1],
+                routesId = routesId,
+                Origin = origin,
                 PassengersFirstClass = details.FirstOrDefault()?.PassengersFirstClass,
                 PassengersSecondClass = details.FirstOrDefault()?.PassengersSecondClass,
-                Destination = await destination,
-                Return = await returned,
-                Depart = await depart,
+                Destination = destination,
+                Return = returned,
+                Depart = depart,
                 SeatNumber1Class = details.FirstOrDefault()?.SeatNumber1Class,
                 SeatsNumber2Class = details.FirstOrDefault()?.SeatsNumber2Class,
                 UserName = user.UserName,
@@ -501,10 +428,10 @@ namespace AirFiel_Mariana_Oliveira.Data
 
         public async Task<int> GetSeatNumber2Async(int flightId)
         {
-           var seatNumber2 = await _dataContext.Route
-                .Where(f => f.Id == flightId)
-                .Select(f => f.Capacity2)
-                .FirstOrDefaultAsync();
+            var seatNumber2 = await _dataContext.Route
+                 .Where(f => f.Id == flightId)
+                 .Select(f => f.Capacity2)
+                 .FirstOrDefaultAsync();
 
             return seatNumber2;
         }

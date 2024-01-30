@@ -11,6 +11,8 @@
         <form asp-action="AddTicket">
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="routesId" />
+            <input type="hidden" asp-for="PricePerTicketId">
 
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>

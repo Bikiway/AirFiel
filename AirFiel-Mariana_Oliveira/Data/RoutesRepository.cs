@@ -112,8 +112,8 @@ namespace AirFiel_Mariana_Oliveira.Data
                 Depart = o.Depart,
             }).ToList();
 
-            int airplaneId = routeTemps.FirstOrDefault()?.airplanes.Id ?? 0;
-            var capacities = GetCapacitiesFromAirplanes(airplaneId);
+            var airplaneId = routeTemps.FirstOrDefault().airplanes.Id;
+            var capacities = await GetCapacitiesFromAirplanes(airplaneId);
 
             var routes = detailsInfo.Select(routeTemp =>
             {
@@ -127,8 +127,8 @@ namespace AirFiel_Mariana_Oliveira.Data
                     Pilot = routeTemp.pilotEmployees,
                     CoPilot = routeTemp.coPilotEmployees,
                     GetFullPrice = routeTemp.FullPrice,
-                    Capacity1 = capacities.Id,
-                    Capacity2 = capacities.Id,
+                    Capacity1 = capacities.FirstOrDefault(),
+                    Capacity2 = capacities.FirstOrDefault(),
                     users = user,
                     Items = detailsInfo,
                     FromCountryCityID = routeTemp.originCities.Id,
